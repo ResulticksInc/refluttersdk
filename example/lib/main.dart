@@ -6,12 +6,12 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:refluttersdk/refluttersdk.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_core/firebase_core.dart';
+//import 'package:firebase_messaging/firebase_messaging.dart';
+//import 'package:firebase_core/firebase_core.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp();
+ // Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     initPlatformState();
-    Firebase.initializeApp();
+   // Firebase.initializeApp();
   }
 
   passLocation() {
@@ -144,10 +144,10 @@ class _MyAppState extends State<MyApp> {
     return null;
   }
 subscribeForNotification() async {
-  await FirebaseMessaging.instance.subscribeToTopic("resul");
+ // await FirebaseMessaging.instance.subscribeToTopic("resul");
 }
 unSubscribeFromNotification() {
-  FirebaseMessaging.instance.unsubscribeFromTopic("resul");
+ // FirebaseMessaging.instance.unsubscribeFromTopic("resul");
 }
 
 
