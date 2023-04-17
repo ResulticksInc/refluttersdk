@@ -2,9 +2,7 @@
 import 'refluttersdk_platform_interface.dart';
 
 class Refluttersdk {
-  Future<String?> getPlatformVersion() {
-    return RefluttersdkPlatform.instance.getPlatformVersion();
-  }
+
   void locationUpdate(double lat, double lang) {
     RefluttersdkPlatform.instance.locationUpdate(lat, lang);
   }

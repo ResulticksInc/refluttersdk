@@ -1,22 +1,10 @@
 package com.resul.refluttersdk_example
-
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.media.RingtoneManager
-import android.net.Uri
-import android.os.Build
-
-import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
-import com.resul.refluttersdk.RefluttersdkPlugin
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import io.flutter.Log
 import android.os.Bundle
+import com.resul.refluttersdk.RefluttersdkPlugin
 
 class MessagingService : FirebaseMessagingService(){
     lateinit var token:String
@@ -36,8 +24,3 @@ class MessagingService : FirebaseMessagingService(){
      }
 
 }
-
-
-
-
-

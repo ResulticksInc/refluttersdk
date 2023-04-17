@@ -25,7 +25,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   final _refluttersdkPlugin = Refluttersdk();
-      String token = "ezyY7vF9TSqiwA3wxwJmYC:APA91bENxHnr2Z2XFHRpbu7GVJklVnDjs7phmEh2M4YNcxxxrPNRw1wtlvwAkGES_uEH8-wRAck30oBkvOwlZ0fJOyVYbcuOAaiOlHGwA9LTLxFnT5iAPAQEGN2LIgfyh6Ax9Iw5Kcf7";
+      String token = "dEHA8nVPTq6wHFINot8wu-:APA91bHGLIoi2wp2tPmzMuVSqFtC3_KnB4lyXnzGhezi9MMwTiFzxrr1flBo_ltcgh0nI22QuXdStKk7W7mxA9MftHU15NmZKpcvRrcTXEUYAI1dkIpkqwzYpUl3jFKz8Bm9JDK-uf9m";
   int notificationCount = 0,
       _counter = 0;
   late String cid;
@@ -35,7 +35,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    initPlatformState();
    // Firebase.initializeApp();
   }
 
@@ -161,27 +160,6 @@ unSubscribeFromNotification() {
 
 
 // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _refluttersdkPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
