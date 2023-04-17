@@ -45,7 +45,7 @@ class RefluttersdkPlugin: FlutterPlugin, MethodCallHandler {
       result.success("Android ${android.os.Build.VERSION.RELEASE}")
     }
 
-    else if(call.method == "onDeviceUserRegister") {
+    else if(call.method == "sdkRegisteration") {
       val gson=Gson()
       var jsonString: String?=call.argument("userData")
       val jsonElement = JsonParser.parseString(jsonString)
@@ -96,12 +96,12 @@ class RefluttersdkPlugin: FlutterPlugin, MethodCallHandler {
         ReAndroidSDK.getInstance(context).formDataCapture(jobj)
       }
     }
-    else if(call.method == "onTrackEvent") {
+    else if(call.method == "customEvent") {
       var content:String? = call.argument("string")
       if (content != null) {
         ReAndroidSDK.getInstance(context).onTrackEvent(content)
       }
-    } else if(call.method == "onTrackEventWithData") {
+    } else if(call.method == "customEventWithData") {
       val event: String?=call.argument("event")
       val eventData:String? = call.argument("eventData")
       val jobj= eventData?.let { JSONObject(it) }
@@ -109,7 +109,7 @@ class RefluttersdkPlugin: FlutterPlugin, MethodCallHandler {
         ReAndroidSDK.getInstance(context).onTrackEvent(jobj, event)
       }
     }
-    else if(call.method =="screentracking"){
+    else if(call.method =="screenTracking"){
       val screenName: String ? = call.argument("screenname")
       if (screenName != null) {
         if (sCalendar == null) sCalendar = Calendar.getInstance()
@@ -128,7 +128,7 @@ class RefluttersdkPlugin: FlutterPlugin, MethodCallHandler {
       OldScreenName = newScreenName
       newScreenName = screenName
     }
-    else if(call.method == "getNotifications") {
+    else if(call.method == "getNotificationList") {
       var notificationList: ArrayList<JSONObject> = ReAndroidSDK.getInstance(context).notificationByObject;
       val gson = Gson()
       val nList = gson.toJson(notificationList)
@@ -155,10 +155,10 @@ class RefluttersdkPlugin: FlutterPlugin, MethodCallHandler {
         ReAndroidSDK.getInstance(context).deleteNotificationByCampaignId(cid)
       }
     }
-    else if(call.method == "readNotificationCount") {
+    else if(call.method == "getReadNotificationCount") {
       result.success(ReAndroidSDK.getInstance(context).readNotificationCount)
     }
-    else if(call.method =="unReadNotificationCount"){
+    else if(call.method =="getUnReadNotificationCount"){
       result.success(ReAndroidSDK.getInstance(context).unReadNotificationCount)
     }
     else if(call.method == "readNotification") {
@@ -187,13 +187,13 @@ class RefluttersdkPlugin: FlutterPlugin, MethodCallHandler {
         ReAndroidSDK.getInstance(context).addNewNotification(title,body,"MainActivity")
       }
     }
-    else if(call.method == "appConversionTracking") {
+    else if(call.method == "appConversion") {
 //      val jsonString = "{\"name\":\"John\",\"age\":30,\"city\":\"New York\"}"
 //      val jsonObject: org.json.JSONObject = JSONObject(jsonString)
 //      ReAndroidSDK.getInstance(context).appConversionTracking(jsonObject)
       ReAndroidSDK.getInstance(context).appConversionTracking()
     }
-    else if(call.method == "appConversionTrackingWithData") {
+    else if(call.method == "appConversionWithData") {
     val jsonString:String? = call.argument("appConvertionData")
        val jsonObject= JSONObject(jsonString)
    ReAndroidSDK.getInstance(context).appConversionTracking(jsonObject)
@@ -213,7 +213,7 @@ class RefluttersdkPlugin: FlutterPlugin, MethodCallHandler {
       val myLink: String? = call.argument("myLink")
       ReAndroidSDK.getInstance(context).handleQrLink(myLink,MyIGetQR())
     }
-    else if(call.method =="notificationCTA"){
+    else if(call.method =="notificationCTAClicked"){
       val campainId: String ? = call.argument("campaignId")
       val actionId: String ? = call.argument("actionId")
       ReAndroidSDK.getInstance(context).notificationCTAClicked(campainId,actionId)

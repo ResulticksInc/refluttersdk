@@ -26,11 +26,11 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   }
   @override
   onTrackEvent(String content) {
-    methodChannel.invokeMapMethod('onTrackEvent',{'string': content});
+    methodChannel.invokeMapMethod('customEvent',{'string': content});
   }
   @override
   void onTrackEventWithData(String jsonString, String data) {
-    methodChannel.invokeMapMethod('onTrackEventWithData',{"eventData":jsonString,"event":data});
+    methodChannel.invokeMapMethod('customEventWithData',{"eventData":jsonString,"event":data});
   }
   @override
   deleteNotificationByCampaignId(content) {
@@ -42,11 +42,11 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   }
   @override
   appConversionTracking() {
-    methodChannel.invokeMapMethod('appConversionTracking');
+    methodChannel.invokeMapMethod('appConversion');
   }
   @override
   appConversionTrackingWithData(String appConvertionData) {
-    methodChannel.invokeMapMethod('appConversionTrackingWithData',{'appConvertionData':appConvertionData});
+    methodChannel.invokeMapMethod('appConversionWithData',{'appConvertionData':appConvertionData});
   }
 
   @override
@@ -60,7 +60,7 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   }
   @override
   onDeviceUserRegister(String userData) {
-    methodChannel.invokeMapMethod('onDeviceUserRegister',{'userData':userData});
+    methodChannel.invokeMapMethod('sdkRegisteration',{'userData':userData});
   }
   @override
   void deepLinkData() {
@@ -68,7 +68,7 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   }
   @override
   Future<int?> readNotificationCount() async {
-    final notifyCount=await methodChannel.invokeMethod<int>('readNotificationCount');
+    final notifyCount=await methodChannel.invokeMethod<int>('getReadNotificationCount');
     return notifyCount;
   }
   @override
@@ -77,18 +77,18 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   }
   @override
   Future <int?> unReadNotificationCount() async {
-    final ur_nCount= await methodChannel.invokeMethod('unReadNotificationCount');
+    final ur_nCount= await methodChannel.invokeMethod('getUnReadNotificationCount');
     return ur_nCount;
   }
 
   @override
   Future<dynamic> getNotification() async {
-    var nList = await methodChannel.invokeMethod('getNotifications');
+    var nList = await methodChannel.invokeMethod('getNotificationList');
     return nList;
   }
 @override
 void screentracking(String screenName) {
-  methodChannel.invokeMapMethod('screentracking',{"screenname":screenName});
+  methodChannel.invokeMapMethod('screenTracking',{"screenname":screenName});
 }
 
   @override
@@ -97,7 +97,7 @@ void screentracking(String screenName) {
   }
   @override
   notificationCTAClicked(String camplaignId,String actionId){
-    methodChannel.invokeMapMethod('notificationCTA',{"campaignId":camplaignId,"actionId":actionId});
+    methodChannel.invokeMapMethod('notificationCTAClicked',{"campaignId":camplaignId,"actionId":actionId});
   }
   @override
   getCampaignData(){
