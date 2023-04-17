@@ -58,6 +58,10 @@ abstract class RefluttersdkPlatform extends PlatformInterface {
   void appConversionTracking() {
     throw UnimplementedError('appConversionTracking() has not been implemented');
   }
+  void appConversionTrackingWithData(String appConvertionData) {
+    throw UnimplementedError('appConversionTrackingWithData() has not been implemented');
+  }
+
 
   void formDataCapture(String formData) {
     throw UnimplementedError('formDataCapture() has not been implemented');

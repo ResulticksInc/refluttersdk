@@ -15,8 +15,8 @@ class Refluttersdk {
   void onTrackEvent(String content) {
     RefluttersdkPlatform.instance.onTrackEvent(content);
   }
-  void onTrackEventWithData(String content, String data) {
-    RefluttersdkPlatform.instance.onTrackEventWithData(content,data);
+  void onTrackEventWithData(String jsonString, String data) {
+    RefluttersdkPlatform.instance.onTrackEventWithData(jsonString,data);
   }
   void deleteNotificationByCampaignId(String cid) {
     RefluttersdkPlatform.instance.deleteNotificationByCampaignId(cid);
@@ -26,6 +26,9 @@ class Refluttersdk {
   }
   void appConversionTracking() {
     RefluttersdkPlatform.instance.appConversionTracking();
+  }
+  void appConversionTrackingWithData(String appConvertionData) {
+    RefluttersdkPlatform.instance.appConversionTrackingWithData(appConvertionData);
   }
   void formDataCapture(String formData) {
     RefluttersdkPlatform.instance.formDataCapture(formData);
