@@ -12,4 +12,11 @@
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
   [SwiftRefluttersdkPlugin registerWithRegistrar:registrar];
 }
++(void)initWithSDK:(NSString *)appId {
+    //[SwiftRefluttersdkPlugin reSdkWith:appId];
+    [SwiftRefluttersdkPlugin reSdkWith:appId];
+}
++(void)testMethod:(NSString *)name {
+    [SwiftRefluttersdkPlugin testMethodWith:@"Rajaram"];
+}
 @end
