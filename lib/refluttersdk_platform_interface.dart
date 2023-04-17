@@ -24,10 +24,6 @@ abstract class RefluttersdkPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
-
   void locationUpdate(double lat, double lang) {
     throw UnimplementedError('locationUpdate() has not been implemented');
   }

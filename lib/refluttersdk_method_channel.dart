@@ -9,11 +9,6 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   @visibleForTesting
   final methodChannel = const MethodChannel('refluttersdk');
 
-  @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
-  }
 
   @override
   locationUpdate(double lat, double lang) {
