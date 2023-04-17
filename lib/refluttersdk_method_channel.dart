@@ -29,8 +29,8 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
     methodChannel.invokeMapMethod('onTrackEvent',{'string': content});
   }
   @override
-  void onTrackEventWithData(String content, String data) {
-    methodChannel.invokeMapMethod('onTrackEventWithData',{"eventData":data,"event":content});
+  void onTrackEventWithData(String jsonString, String data) {
+    methodChannel.invokeMapMethod('onTrackEventWithData',{"eventData":jsonString,"event":data});
   }
   @override
   deleteNotificationByCampaignId(content) {

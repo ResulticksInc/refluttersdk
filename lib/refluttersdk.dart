@@ -15,8 +15,8 @@ class Refluttersdk {
   void onTrackEvent(String content) {
     RefluttersdkPlatform.instance.onTrackEvent(content);
   }
-  void onTrackEventWithData(String content, String data) {
-    RefluttersdkPlatform.instance.onTrackEventWithData(content,data);
+  void onTrackEventWithData(String jsonString, String data) {
+    RefluttersdkPlatform.instance.onTrackEventWithData(jsonString,data);
   }
   void deleteNotificationByCampaignId(String cid) {
     RefluttersdkPlatform.instance.deleteNotificationByCampaignId(cid);
