@@ -81,6 +81,14 @@ class _MyAppState extends State<MyApp> {
   appconversionTracking() {
     _refluttersdkPlugin.appConversionTracking();
   }
+  appconversionTrackingWithData() {
+    Map appData={
+      "name":"xyrr",
+      "age":"23",
+      "city":"dhajf"};
+    String appConvertionData=jsonEncode(appData);
+    _refluttersdkPlugin.appConversionTrackingWithData(appConvertionData);
+  }
 
   formdataCapture() {
     Map param = {
@@ -144,15 +152,17 @@ class _MyAppState extends State<MyApp> {
     return null;
   }
 subscribeForNotification() async {
-  await FirebaseMessaging.instance.subscribeToTopic("resul");
+  await Firebase.initializeApp();
+   await FirebaseMessaging.instance.subscribeToTopic("resul");
 }
-unSubscribeFromNotification() {
-  FirebaseMessaging.instance.unsubscribeFromTopic("resul");
+unSubscribeFromNotification() async {
+    await  Firebase.initializeApp();
+   await FirebaseMessaging.instance.unsubscribeFromTopic("resul");
 }
 
 
 
-  // Platform messages are asynchronous, so we initialize in an async method.
+// Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     String platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
@@ -294,8 +304,8 @@ unSubscribeFromNotification() {
                             style:
                             ElevatedButton.styleFrom(
                               minimumSize: Size.fromHeight(40),);
-                            getdeepLinkData();
-                          }, child: Text("Get deepLinkData"),),
+                            appconversionTrackingWithData();
+                          }, child: Text("AppConvertionTrackingWithData"),),
                         ),
 
                         SizedBox(

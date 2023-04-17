@@ -44,6 +44,10 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   appConversionTracking() {
     methodChannel.invokeMapMethod('appConversionTracking');
   }
+  @override
+  appConversionTrackingWithData(String appConvertionData) {
+    methodChannel.invokeMapMethod('appConversionTrackingWithData',{'appConvertionData':appConvertionData});
+  }
 
   @override
   formDataCapture(String formData) {

@@ -27,6 +27,9 @@ class Refluttersdk {
   void appConversionTracking() {
     RefluttersdkPlatform.instance.appConversionTracking();
   }
+  void appConversionTrackingWithData(String appConvertionData) {
+    RefluttersdkPlatform.instance.appConversionTrackingWithData(appConvertionData);
+  }
   void formDataCapture(String formData) {
     RefluttersdkPlatform.instance.formDataCapture(formData);
   }

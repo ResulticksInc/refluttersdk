@@ -193,6 +193,11 @@ class RefluttersdkPlugin: FlutterPlugin, MethodCallHandler {
 //      ReAndroidSDK.getInstance(context).appConversionTracking(jsonObject)
       ReAndroidSDK.getInstance(context).appConversionTracking()
     }
+    else if(call.method == "appConversionTrackingWithData") {
+    val jsonString:String? = call.argument("appConvertionData")
+       val jsonObject= JSONObject(jsonString)
+   ReAndroidSDK.getInstance(context).appConversionTracking(jsonObject)
+    }
     else if(call.method == "deepLinkData") {
       print("DeepLinkData!!!")
       var deepLinkData=ReAndroidSDK.getInstance(context).deepLinkData
