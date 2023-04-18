@@ -32,63 +32,59 @@ abstract class RefluttersdkPlatform extends PlatformInterface {
     throw UnimplementedError('newNotification() has not been implemented');
   }
 
-  void onTrackEvent(String content) {
-    throw UnimplementedError('onTrackEvent() has not been implemented');
+  void customEvent(String event) {
+    throw UnimplementedError('customEvent() has not been implemented');
   }
 
-  void onTrackEventWithData(String content, String data) {
-    throw UnimplementedError('onTrackEventWithData() has not been implemented.');
+  void customEventWithData(Map eventData, String event) {
+    throw UnimplementedError('customEventWithData() has not been implemented.');
   }
 
-  void customEvent(String eventData, String event) {
-    throw UnimplementedError('onTrackEventwithData() has not been implemented.');
-  }
-
-  void deleteNotificationByCampaignId(content) {
+  void deleteNotificationByCampaignId(String campaignId) {
     throw UnimplementedError('deleteNotificationByCampaignId() has not been implemented');
   }
-  void readNotification(content) {
+  void readNotification(String campaignId) {
     throw UnimplementedError('readNotification() has not been implemented');
   }
 
-  void appConversionTracking() {
-    throw UnimplementedError('appConversionTracking() has not been implemented');
+  void appConversion() {
+    throw UnimplementedError('appConversion() has not been implemented');
   }
-  void appConversionTrackingWithData(String appConvertionData) {
-    throw UnimplementedError('appConversionTrackingWithData() has not been implemented');
+  void appConversionWithData(Map appConvertionData) {
+    throw UnimplementedError('appConversionWithData() has not been implemented');
   }
 
 
-  void formDataCapture(String formData) {
+  void formDataCapture(Map formData) {
     throw UnimplementedError('formDataCapture() has not been implemented');
   }
 
-  Future<int?>readNotificationCount() {
-    throw UnimplementedError('readNotificationCount() has not been implemented');
+  Future<int?>getReadNotificationCount() {
+    throw UnimplementedError('getReadNotificationCount() has not been implemented');
   }
 
   void updatePushToken(String token) {
     throw UnimplementedError('updatePushToken() has not been implemented');
   }
 
-  void onDeviceUserRegister(String userData) {
-    throw UnimplementedError('onDeviceUserRegister() has not been implemented');
+  void sdkRegisteration(Map userData) {
+    throw UnimplementedError('sdkRegisteration() has not been implemented');
   }
 
   void deepLinkData() {
     throw UnimplementedError('deepLinkData() has not been implemented');
   }
 
-  void unReadNotification(String cid) {
+  void unReadNotification(String campaignId) {
     throw UnimplementedError('unReadNotification() has not been implemented');
   }
-  Future <int?> unReadNotificationCount() {
-    throw UnimplementedError('unReadNotification() has not been implemented');
+  Future <int?> getUnReadNotificationCount() {
+    throw UnimplementedError('getUnReadNotification() has not been implemented');
   }
 
 
-  Future<dynamic>getNotification() {
-    throw UnimplementedError('getNotification() has not been implemented.');
+  Future<dynamic>getNotificationList() {
+    throw UnimplementedError('getNotificationList() has not been implemented.');
   }
 
   void screentracking(String screenName) {

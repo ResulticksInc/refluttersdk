@@ -2,21 +2,17 @@ package com.resul.refluttersdk
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import androidx.annotation.NonNull
-
+import com.google.firebase.messaging.RemoteMessage
+import com.google.gson.Gson
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
-import java.util.*
-
 import io.mob.resu.reandroidsdk.*
 import org.json.JSONObject
-import com.google.gson.Gson
-import android.util.Log
-import com.google.firebase.messaging.RemoteMessage
-import com.google.gson.JsonParser
+import java.util.*
 
 
 /** RefluttersdkPlugin */
@@ -25,12 +21,14 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler {
     ///
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
     /// when the Flutter Engine is detached from the Activity
-    private lateinit var channel: MethodChannel
-
+    lateinit var methodChannelforDeeplink:MethodChannel
     private lateinit var context: Context
     private lateinit var activity: Activity
+    private lateinit var channel: MethodChannel
+
     var OldScreenName: String? = null
     var newScreenName: String? = null
+
     private var oldCalendar = Calendar.getInstance()
     private var sCalendar = Calendar.getInstance()
 
@@ -38,6 +36,9 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "refluttersdk")
         channel.setMethodCallHandler(this)
         context = flutterPluginBinding.applicationContext
+
+//         methodChannelforDeeplink = MethodChannel(flutterPluginBinding.binaryMessenger, "myChannel")
+
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: MethodChannel.Result) {
@@ -45,69 +46,44 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler {
         when (call.method) {
 
             "sdkRegisteration" -> {
-                val gson = Gson()
-                var jsonString: String? = call.argument("userData")
-                val jsonElement = JsonParser.parseString(jsonString)
+                val userDataJObj = JSONObject(call.arguments as Map<String,String>)
+                val mRegisterUser= MRegisterUser()
 
-                val jObj = jsonElement.asJsonObject
-                val userUniqueId = jObj.get("userUniqueId").asString
-                val name = jObj.get("name").asString
-                val age = jObj.get("age").asString
-                val email = jObj.get("email").asString
-                val phone = jObj.get("phone").asString
-                val gender = jObj.get("gender").asString
-                val token = jObj.get("deviceToken").asString
-                val profileUrl = jObj.get("profileUrl").asString
-                val dob = jObj.get("dob").asString
-                val education = jObj.get("education").asString
-                val employed = jObj.get("employed").asBoolean
-                val married = jObj.get("married").asBoolean
-                val adId = jObj.get("storeId").asString
+                mRegisterUser.userUniqueId  = userDataJObj.getString("userUniqueId")
+                mRegisterUser.name = userDataJObj.getString("name")
+                mRegisterUser.age = userDataJObj.getString("age")
+                mRegisterUser.email = userDataJObj.getString("email")
+                mRegisterUser.phone = userDataJObj.getString("phone")
+                mRegisterUser.gender = userDataJObj.getString("gender")
+                mRegisterUser.deviceToken = userDataJObj.getString("deviceToken")
+                mRegisterUser.profileUrl = userDataJObj.getString("profileUrl")
+                mRegisterUser.dob = userDataJObj.getString("dob")
+                mRegisterUser.education = userDataJObj.getString("education")
+                mRegisterUser.isEmployed  = userDataJObj.getBoolean("employed")
+                mRegisterUser.isMarried = userDataJObj.getBoolean("married")
+                mRegisterUser.adId= userDataJObj.getString("storeId")
 
-                val obj = MRegisterUser()
-                obj.userUniqueId = userUniqueId
-                obj.name = name
-                obj.age = age
-                obj.email = email
-                obj.phone = phone
-                obj.gender = gender
-                obj.deviceToken = token
-                obj.profileUrl = profileUrl
-                obj.dob = dob
-                obj.education = education
-                obj.adId = adId
-                if (employed != null) {
-                    obj.isEmployed = employed
-                }
-                if (married != null) {
-                    obj.isMarried = married
-                }
-                ReAndroidSDK.getInstance(context).onDeviceUserRegister(obj)
+                ReAndroidSDK.getInstance(context).onDeviceUserRegister(mRegisterUser)
             }
             "updatePushToken" -> {
-                var token: String? = call.argument("regToken")
-                ReAndroidSDK.getInstance(context).updatePushToken(token)
+                ReAndroidSDK.getInstance(context).updatePushToken(call.arguments())
             }
             "formDataCapture" -> {
-                var formData: String? = call.argument("formData")
-                val jobj = JSONObject(formData)
-                if (formData != null) {
-                    ReAndroidSDK.getInstance(context).formDataCapture(jobj)
-                }
+                val formData:JSONObject = JSONObject(call.arguments as Map<String, Any>)
+                    ReAndroidSDK.getInstance(context).formDataCapture(formData)
             }
             "customEvent" -> {
-                var content: String? = call.argument("string")
-                if (content != null) {
-                    ReAndroidSDK.getInstance(context).onTrackEvent(content)
-                }
+                    ReAndroidSDK.getInstance(context).onTrackEvent(call.arguments())
             }
             "customEventWithData" -> {
-                val event: String? = call.argument("event")
-                val eventData: String? = call.argument("eventData")
-                val jobj = eventData?.let { JSONObject(it) }
-                if (eventData != null) {
-                    ReAndroidSDK.getInstance(context).onTrackEvent(jobj, event)
+                val eventDataMap = call.argument<Map<String, Any>>("eventData")
+                val eventDataJson = JSONObject()
+                if (eventDataMap != null) {
+                    for ((key, value) in eventDataMap) {
+                        eventDataJson.put(key, value)
+                    }
                 }
+                ReAndroidSDK.getInstance(context).onTrackEvent(eventDataJson, call.argument("event"))
             }
             "screenTracking" -> {
                 val screenName: String? = call.argument("screenname")
@@ -134,28 +110,11 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler {
                     ReAndroidSDK.getInstance(context).notificationByObject;
                 val gson = Gson()
                 val nList = gson.toJson(notificationList)
-
-                val hashMap: HashMap<Int, HashMap<String, String>> = HashMap()
-                for (i in notificationList.indices) {
-                    val jsonObj: JSONObject = notificationList[i]
-                    val keys: Iterator<String> = jsonObj.keys()
-                    val jsonMap: HashMap<String, String> = HashMap()
-
-                    while (keys.hasNext()) {
-                        val key: String = keys.next()
-                        val value: String = jsonObj.getString(key)
-                        jsonMap.put(key, value)
-                    }
-                    hashMap[i] = jsonMap
-                }
-                print("HashMap :: $hashMap")
+                print("HashMap :: $nList")
                 result.success(nList)
             }
             "deleteNotificationByCampaignId" -> {
-                var cid: String? = call.argument("cid")
-                if (cid != null) {
-                    ReAndroidSDK.getInstance(context).deleteNotificationByCampaignId(cid)
-                }
+                    ReAndroidSDK.getInstance(context).deleteNotificationByCampaignId(call.arguments())
             }
             "getReadNotificationCount" -> {
                 result.success(ReAndroidSDK.getInstance(context).readNotificationCount)
@@ -164,16 +123,13 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler {
                 result.success(ReAndroidSDK.getInstance(context).unReadNotificationCount)
             }
             "readNotification" -> {
-                var cid: String? = call.argument("cid")
-                if (cid != null) {
-                    ReAndroidSDK.getInstance(context).readNotification(cid)
-                }
+
+                    ReAndroidSDK.getInstance(context).readNotification(call.arguments())
             }
             "unReadNotification" -> {
-                var cid: String? = call.argument("cid")
-                if (cid != null) {
-                    ReAndroidSDK.getInstance(context).unReadNotification(cid)
-                }
+
+                    ReAndroidSDK.getInstance(context).unReadNotification(call.arguments())
+
             }
             "locationUpdate" -> {
                 var lat: Double? = call.argument("lat")
@@ -183,19 +139,14 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler {
                 }
             }
             "addNewNotification" -> {
-                var title: String? = call.argument("title")
-                var body: String? = call.argument("body")
-                if (title != null && body != null) {
-                    ReAndroidSDK.getInstance(context).addNewNotification(title, body, "MainActivity")
-                }
+                    ReAndroidSDK.getInstance(context).addNewNotification(call.argument("title"),call.argument("body") , "MainActivity")
             }
             "appConversion" -> {
                 ReAndroidSDK.getInstance(context).appConversionTracking()
             }
             "appConversionWithData" -> {
-                val jsonString: String? = call.argument("appConvertionData")
-                val jsonObject = JSONObject(jsonString)
-                ReAndroidSDK.getInstance(context).appConversionTracking(jsonObject)
+                val appConvertionDataJObj = JSONObject(call.arguments as Map<String,String>)
+                ReAndroidSDK.getInstance(context).appConversionTracking(appConvertionDataJObj)
             }
             "deepLinkData" -> {
                 print("DeepLinkData!!!")
@@ -215,17 +166,16 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler {
                 ReAndroidSDK.getInstance(context).handleQrLink(myLink, MyIGetQR())
             }
             "notificationCTAClicked" -> {
-                val campainId: String? = call.argument("campaignId")
-                val actionId: String? = call.argument("actionId")
-                ReAndroidSDK.getInstance(context).notificationCTAClicked(campainId, actionId)
+
+                ReAndroidSDK.getInstance(context).notificationCTAClicked(call.argument("campaignId"),call.argument("actionId"))
             }
             "getCampaignData" -> {
-                print("GetCampaiganDataCalled!!!")
+
                 ReAndroidSDK.getInstance(context).getCampaignData(object : IDeepLinkInterface {
                     override fun onInstallDataReceived(data: String) {
                         try {
                             val jsonObject = JSONObject(data)
-                            print("onInstallDataReceived :: $jsonObject")
+                      //handle here
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -236,7 +186,7 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler {
                         Log.e("onDeepLinkData", data)
                         try {
                             val jsonObject = JSONObject(data)
-                            print("onDeepLinkData :: $jsonObject")
+                          //handle here
 
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -262,6 +212,12 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler {
         io.flutter.Log.d("msgTrace", "From native code!!!!")
         ReAndroidSDK.getInstance(flutterContext).onReceivedCampaign(remoteMessage.data)
     }
+//
+//    private fun callFlutterMethod(receivedData: String) {
+//
+//        methodChannelforDeeplink.invokeMethod("myMethod", receivedData)
+//    }
+
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)

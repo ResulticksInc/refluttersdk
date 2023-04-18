@@ -7,55 +7,53 @@ class Refluttersdk {
     RefluttersdkPlatform.instance.locationUpdate(lat, lang);
   }
   void addNewNotification(String notificationTitle, String notificationBody) {
-    RefluttersdkPlatform.instance.addNewNotification(
-        notificationTitle, notificationBody);
+    RefluttersdkPlatform.instance.addNewNotification(notificationTitle, notificationBody);
   }
-  void onTrackEvent(String content) {
-    RefluttersdkPlatform.instance.onTrackEvent(content);
+  void customEvent(String event) {
+    RefluttersdkPlatform.instance.customEvent(event);
   }
-  void onTrackEventWithData(String jsonString, String data) {
-    RefluttersdkPlatform.instance.onTrackEventWithData(jsonString,data);
+  void customEventWithData(Map eventData, String event) {
+    RefluttersdkPlatform.instance.customEventWithData(eventData,event);
   }
-  void deleteNotificationByCampaignId(String cid) {
-    RefluttersdkPlatform.instance.deleteNotificationByCampaignId(cid);
+  void deleteNotificationByCampaignId(String campaignId) {
+    RefluttersdkPlatform.instance.deleteNotificationByCampaignId(campaignId);
   }
-  void readNotification(String cid) {
-    RefluttersdkPlatform.instance.readNotification(cid);
+  void readNotification(String campaignId) {
+    RefluttersdkPlatform.instance.readNotification(campaignId);
   }
-  void appConversionTracking() {
-    RefluttersdkPlatform.instance.appConversionTracking();
+  void appConversion() {
+    RefluttersdkPlatform.instance.appConversion();
   }
-  void appConversionTrackingWithData(String appConvertionData) {
-    RefluttersdkPlatform.instance.appConversionTrackingWithData(appConvertionData);
+  void appConversionWithData(Map appConvertionData) {
+    RefluttersdkPlatform.instance.appConversionWithData(appConvertionData);
   }
-  void formDataCapture(String formData) {
+  void formDataCapture(Map formData) {
     RefluttersdkPlatform.instance.formDataCapture(formData);
   }
   Future<int?>  getReadNotificationCount()async {
-    var r_Ncount= RefluttersdkPlatform.instance.readNotificationCount();
+    var r_Ncount= RefluttersdkPlatform.instance.getReadNotificationCount();
     return r_Ncount;
   }
   Future <int?> getUnReadNotificationCount()async {
-    var un_Ncount= await RefluttersdkPlatform.instance.unReadNotificationCount();
+    var un_Ncount= await RefluttersdkPlatform.instance.getUnReadNotificationCount();
     return un_Ncount;
   }
   void updatePushToken(String token) {
     RefluttersdkPlatform.instance.updatePushToken(token);
   }
-  void onDeviceUserRegister(String userData) {
-    RefluttersdkPlatform.instance.onDeviceUserRegister(userData);
+  void sdkRegisteration(Map userData) {
+    RefluttersdkPlatform.instance.sdkRegisteration(userData);
   }
   void deepLinkData () {
     RefluttersdkPlatform.instance.deepLinkData();
-
   }
-  void unReadNotification(String cid) {
-    RefluttersdkPlatform.instance.unReadNotification(cid);
+  void unReadNotification(String campaignId) {
+    RefluttersdkPlatform.instance.unReadNotification(campaignId);
   }
 
 
-  Future<dynamic> getNotification()async{
-    var nList = await RefluttersdkPlatform.instance.getNotification();
+  Future<dynamic> getNotificationList() async{
+    var nList = await RefluttersdkPlatform.instance.getNotificationList();
     return nList;
   }
 

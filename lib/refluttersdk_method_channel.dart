@@ -19,65 +19,68 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   addNewNotification(String notificationTitle, String notificationBody) {
     methodChannel.invokeMapMethod('addNewNotification',{'title': notificationTitle,'body':notificationBody});
   }
+
   @override
-  onTrackEvent(String content) {
-    methodChannel.invokeMapMethod('customEvent',{'string': content});
-  }
-  @override
-  void onTrackEventWithData(String jsonString, String data) {
-    methodChannel.invokeMapMethod('customEventWithData',{"eventData":jsonString,"event":data});
-  }
-  @override
-  deleteNotificationByCampaignId(content) {
-    methodChannel.invokeMapMethod('deleteNotificationByCampaignId',{'cid':content});
-  }
-  @override
-  readNotification(content) {
-    methodChannel.invokeMapMethod('readNotification',{'cid':content});
-  }
-  @override
-  appConversionTracking() {
-    methodChannel.invokeMapMethod('appConversion');
-  }
-  @override
-  appConversionTrackingWithData(String appConvertionData) {
-    methodChannel.invokeMapMethod('appConversionWithData',{'appConvertionData':appConvertionData});
+  customEvent(String event) {
+    methodChannel.invokeMethod('customEvent',event);
   }
 
   @override
-  formDataCapture(String formData) {
-    methodChannel.invokeMapMethod('formDataCapture',{'formData':formData});
+  void customEventWithData(Map eventData, String event) {
+    methodChannel.invokeMapMethod('customEventWithData',{"eventData":eventData,"event":event});
+  }
+  @override
+  deleteNotificationByCampaignId(String campaignId) {
+    methodChannel.invokeMethod('deleteNotificationByCampaignId',campaignId);
+  }
+  @override
+  readNotification(String campaignId) {
+    methodChannel.invokeMapMethod('readNotification',campaignId);
+  }
+  @override
+  appConversion() {
+    methodChannel.invokeMapMethod('appConversion');
+  }
+  @override
+  appConversionWithData(Map appConvertionData) {
+    methodChannel.invokeMethod('appConversionWithData',appConvertionData);
+  }
+
+  @override
+  formDataCapture(Map formData) {
+    methodChannel.invokeMethod('formDataCapture',formData);
   }
 
   @override
   updatePushToken(String regToken) {
-    methodChannel.invokeMapMethod('updatePushToken',{'regToken':regToken});
+    methodChannel.invokeMapMethod('updatePushToken',regToken);
   }
   @override
-  onDeviceUserRegister(String userData) {
-    methodChannel.invokeMapMethod('sdkRegisteration',{'userData':userData});
+  sdkRegisteration(Map userData) {
+    methodChannel.invokeMethod('sdkRegisteration',userData);
   }
   @override
   void deepLinkData() {
     methodChannel.invokeMapMethod('deepLinkData');
   }
   @override
-  Future<int?> readNotificationCount() async {
+  Future<int?> getReadNotificationCount() async {
     final notifyCount=await methodChannel.invokeMethod<int>('getReadNotificationCount');
     return notifyCount;
   }
+
   @override
-  unReadNotification(String cid) {
-    methodChannel.invokeMapMethod('unReadNotification',{'cid':cid});
+  unReadNotification(String campaignId) {
+    methodChannel.invokeMethod('unReadNotification',campaignId);
   }
   @override
-  Future <int?> unReadNotificationCount() async {
+  Future <int?> getUnReadNotificationCount() async {
     final ur_nCount= await methodChannel.invokeMethod('getUnReadNotificationCount');
     return ur_nCount;
   }
 
   @override
-  Future<dynamic> getNotification() async {
+  Future<dynamic> getNotificationList() async {
     var nList = await methodChannel.invokeMethod('getNotificationList');
     return nList;
   }
