@@ -35,6 +35,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    _refluttersdkPlugin.getCampaiginData();
    // Firebase.initializeApp();
   }
 
@@ -51,9 +52,9 @@ class _MyAppState extends State<MyApp> {
         notificationTitle, notificationBody);
   }
 
-  ontrackEvent() {
+  customEvent() {
     var content = "On Track Event called!!!";
-    _refluttersdkPlugin.onTrackEvent(content);
+    _refluttersdkPlugin.customEvent(content);
   }
 
   deleteNotificationByCampaignid() {
@@ -78,38 +79,35 @@ class _MyAppState extends State<MyApp> {
   }
 
   appconversionTracking() {
-    _refluttersdkPlugin.appConversionTracking();
+    _refluttersdkPlugin.appConversion();
   }
   appconversionTrackingWithData() {
-    Map appData={
+    Map appConvertionData={
       "name":"xyrr",
       "age":"23",
       "city":"dhajf"};
-    String appConvertionData=jsonEncode(appData);
-    _refluttersdkPlugin.appConversionTrackingWithData(appConvertionData);
+    _refluttersdkPlugin.appConversionWithData(appConvertionData);
   }
 
   formdataCapture() {
-    Map param = {
+    Map formData = {
       "Name": "vishwa",
       "EmailID": "abc@gmail.com",
-      "MobileNo": 9329222922,
+      "MobileNo": 9329333,
       "Gender": "Male",
       "formid": 101, // required
       "apikey": "api_key_b78db6rb3-9462-4132-a4d3-894db10b3782",
       "City": "Chennai" // required
     };
-    String formData = jsonEncode(param);
     _refluttersdkPlugin.formDataCapture(formData);
   }
 
-  onTrackEventwithData() {
-    var data = {
+  customEventwithData() {
+    var eventData = {
       "name": "payment",
-      "data": {"id": "2d43", "price": "477"}
+      "data": {"id": "6744", "price": "477"}
     };
-    String eventData = jsonEncode(data);
-    _refluttersdkPlugin.onTrackEventWithData(eventData, "Purchase");
+    _refluttersdkPlugin.customEventWithData(eventData, "Purchase");
   }
 
   updatepushToken() {
@@ -117,9 +115,9 @@ class _MyAppState extends State<MyApp> {
   }
   ondeviceRegister() {
 
-    Map param = {
-      "userUniqueId":"123",
-      "name": "vishwa",
+    Map userData = {
+      "userUniqueId":"1111",
+      "name": "kkkkk",
       "age":"23",
       "email": "abc@gmail.com",
       "phone": "12334455",
@@ -130,10 +128,9 @@ class _MyAppState extends State<MyApp> {
       "employed":"true",
       "married":"false",
       "deviceToken":token,
-      "storeId":"2334"
+      "storeId":"555"
     };
-    String userData = jsonEncode(param);
-    _refluttersdkPlugin.onDeviceUserRegister(userData);
+    _refluttersdkPlugin.sdkRegisteration(userData);
   }
 
 
@@ -157,11 +154,22 @@ unSubscribeFromNotification() {
  // FirebaseMessaging.instance.unsubscribeFromTopic("resul");
 }
 
+  void myMethod(String message) {
+    print('Message from native code: $message');
+  }
 
 
 // Platform messages are asynchronous, so we initialize in an async method.
   @override
   Widget build(BuildContext context) {
+    MethodChannel _methodChannel = MethodChannel('myChannel');
+    _methodChannel.setMethodCallHandler((call) async {
+      if (call.method == 'myMethod') {
+        String message = call.arguments;
+        myMethod(message);
+      }
+    });
+
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
@@ -216,7 +224,7 @@ unSubscribeFromNotification() {
                           child: ElevatedButton(onPressed: () {
                             setState(() async {
                               nList = await _refluttersdkPlugin
-                                  .getNotification();
+                                  .getNotificationList();
                             });
                           }, child: Text("Get Notifications"),),
                         ),
@@ -256,8 +264,8 @@ unSubscribeFromNotification() {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(onPressed: () {
-                            ontrackEvent();
-                          }, child: Text("OnTrackEvent"),),
+                            customEvent();
+                          }, child: Text("customEvent"),),
                         ),
                         SizedBox(
                           width: double.infinity,
@@ -265,8 +273,8 @@ unSubscribeFromNotification() {
                             style:
                             ElevatedButton.styleFrom(
                               minimumSize: Size.fromHeight(40),);
-                            onTrackEventwithData();
-                          }, child: const Text("OnTrackEventwithData"),),
+                            customEventwithData();
+                          }, child: const Text("customEventwithData"),),
                         ),
                         SizedBox(
                           width: double.infinity,
