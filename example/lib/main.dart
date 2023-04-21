@@ -2,16 +2,18 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:refluttersdk/refluttersdk.dart';
-//import 'package:firebase_messaging/firebase_messaging.dart';
-//import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:uni_links/uni_links.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
- // Firebase.initializeApp();
+  Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -23,6 +25,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+  bool _initialURILinkHandled = false;
+  Uri? _initialURI;
+  Uri? _currentURI;
+  Object? _err;
+  StreamSubscription? _streamSubscription;
+  
   String _platformVersion = 'Unknown';
   final _refluttersdkPlugin = Refluttersdk();
       String token = "dEHA8nVPTq6wHFINot8wu-:APA91bHGLIoi2wp2tPmzMuVSqFtC3_KnB4lyXnzGhezi9MMwTiFzxrr1flBo_ltcgh0nI22QuXdStKk7W7mxA9MftHU15NmZKpcvRrcTXEUYAI1dkIpkqwzYpUl3jFKz8Bm9JDK-uf9m";
@@ -35,8 +44,11 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _refluttersdkPlugin.getCampaiginData();
-   // Firebase.initializeApp();
+    Firebase.initializeApp();
+   /// _initURIHandler();
+   // _incomingLinkHandler();
+    //initiateMethodChannel();
+    getdeepLinkData();
   }
 
   passLocation() {
@@ -107,7 +119,7 @@ class _MyAppState extends State<MyApp> {
       "name": "payment",
       "data": {"id": "6744", "price": "477"}
     };
-    _refluttersdkPlugin.customEventWithData(eventData, "Purchase");
+    _refluttersdkPlugin.customEventWithData(eventData);
   }
 
   updatepushToken() {
@@ -132,12 +144,40 @@ class _MyAppState extends State<MyApp> {
     };
     _refluttersdkPlugin.sdkRegisteration(userData);
   }
-
+ 
 
   getdeepLinkData() {
-    _refluttersdkPlugin.deepLinkData();
+    _refluttersdkPlugin.deepLinkData((String data)=> {
+      //showAlert(bcontext,data)
+       print('onInstallDataReceived :: $data')
+    });
   }
-  Future<int?> readnotificationCount() async {
+
+// receiveDeeplink(String data){
+//     print("Deeplink Received :: $data");
+// }
+//   getdeepLinkData() {
+//     _refluttersdkPlugin.deepLinkData(receiveDeeplink);
+//   }
+
+
+  void showAlert(BuildContext context,String type) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          Future.delayed(Duration(seconds: 2), () {
+            Navigator.of(context).pop(true);
+          });
+          return AlertDialog(
+            title: Text('Notification firebase'),
+            content: Text( "Message state:${type} "),
+          );
+        });
+  }
+
+
+
+  readnotificationCount() async {
     var rnCount = await _refluttersdkPlugin.getReadNotificationCount()!;
     setState(() {
       notificationCount = rnCount!;
@@ -145,35 +185,42 @@ class _MyAppState extends State<MyApp> {
     if (kDebugMode) {
       print("readNotificationCount::$rnCount");
     }
-    return null;
   }
+
+  unReadnotificationCount() async {
+    var unreadCount = await _refluttersdkPlugin.getUnReadNotificationCount()!;
+    print("unReadNotificationCount::$unreadCount");
+  }
+  getNotificationList() async{
+    var notificationList = await _refluttersdkPlugin.getNotificationList();
+    print("GetNotificationList::$notificationList");
+  }
+
+
 subscribeForNotification() async {
- // await FirebaseMessaging.instance.subscribeToTopic("resul");
+ await FirebaseMessaging.instance.subscribeToTopic("resul");
 }
 unSubscribeFromNotification() {
- // FirebaseMessaging.instance.unsubscribeFromTopic("resul");
+  FirebaseMessaging.instance.unsubscribeFromTopic("resul");
 }
 
-  void myMethod(String message) {
-    print('Message from native code: $message');
+  void onInastallDataReceived(String message) {
+    print('onInstallDataReceived :: $message');
+  }
+  void onDeepLinkData(String message) {
+    print('onDeepLinkData :: $message');
   }
 
 
+   var bcontext ;
 // Platform messages are asynchronous, so we initialize in an async method.
   @override
   Widget build(BuildContext context) {
-    MethodChannel _methodChannel = MethodChannel('myChannel');
-    _methodChannel.setMethodCallHandler((call) async {
-      if (call.method == 'myMethod') {
-        String message = call.arguments;
-        myMethod(message);
-      }
-    });
-
+    bcontext =context;
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
-            title: const Text('Plugin example app'),
+            title: const Text('ReFlutter - Sdk'),
           ),
           body: SingleChildScrollView(
               child:ConstrainedBox(
@@ -222,11 +269,8 @@ unSubscribeFromNotification() {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(onPressed: () {
-                            setState(() async {
-                              nList = await _refluttersdkPlugin
-                                  .getNotificationList();
-                            });
-                          }, child: Text("Get Notifications"),),
+                            getNotificationList();
+                          }, child: Text("Get Notification List"),),
                         ),
 
                         SizedBox(
@@ -238,11 +282,7 @@ unSubscribeFromNotification() {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(onPressed: () {
-                            setState(() async {
-                              var un_rCount = await _refluttersdkPlugin
-                                  .getUnReadNotificationCount();
-                              print("unReadNotificationCount:: $un_rCount");
-                            });
+                          unReadnotificationCount();
                           }, child: const Text("Un_Read_Notification_Count"),),
                         ),
                         SizedBox(
@@ -353,7 +393,8 @@ unSubscribeFromNotification() {
                             style:
                             ElevatedButton.styleFrom(
                               minimumSize: Size.fromHeight(40),);
-                            _refluttersdkPlugin.deepLinkData();
+                            // _refluttersdkPlugin.deepLinkData();
+                            getdeepLinkData();
                           }, child: Text("GetDeepLinkData"),),
                         ),
                         SizedBox(
@@ -374,6 +415,7 @@ unSubscribeFromNotification() {
                            unSubscribeFromNotification();
                           }, child: Text("UnSubscribe Notification"),),
                         ),
+
                       ],
                     ),
                   )

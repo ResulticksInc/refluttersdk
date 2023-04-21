@@ -1,4 +1,5 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:refluttersdk/refluttersdk.dart';
 
 import 'refluttersdk_method_channel.dart';
 
@@ -24,38 +25,37 @@ abstract class RefluttersdkPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  void locationUpdate(double lat, double lang) {
+   locationUpdate(double lat, double lang) {
     throw UnimplementedError('locationUpdate() has not been implemented');
   }
 
-  void addNewNotification(String notificationTitle, String notificationBody){
+   addNewNotification(String notificationTitle, String notificationBody){
     throw UnimplementedError('newNotification() has not been implemented');
   }
 
-  void customEvent(String event) {
+   customEvent(String event) {
     throw UnimplementedError('customEvent() has not been implemented');
   }
 
-  void customEventWithData(Map eventData, String event) {
+  void customEventWithData(Map eventData) {
     throw UnimplementedError('customEventWithData() has not been implemented.');
   }
 
-  void deleteNotificationByCampaignId(String campaignId) {
+   deleteNotificationByCampaignId(String campaignId) {
     throw UnimplementedError('deleteNotificationByCampaignId() has not been implemented');
   }
-  void readNotification(String campaignId) {
+   readNotification(String campaignId) {
     throw UnimplementedError('readNotification() has not been implemented');
   }
 
-  void appConversion() {
+   appConversion() {
     throw UnimplementedError('appConversion() has not been implemented');
   }
-  void appConversionWithData(Map appConvertionData) {
+   appConversionWithData(Map appConvertionData) {
     throw UnimplementedError('appConversionWithData() has not been implemented');
   }
 
-
-  void formDataCapture(Map formData) {
+  formDataCapture(Map formData) {
     throw UnimplementedError('formDataCapture() has not been implemented');
   }
 
@@ -63,19 +63,19 @@ abstract class RefluttersdkPlatform extends PlatformInterface {
     throw UnimplementedError('getReadNotificationCount() has not been implemented');
   }
 
-  void updatePushToken(String token) {
+   updatePushToken(String token) {
     throw UnimplementedError('updatePushToken() has not been implemented');
   }
 
-  void sdkRegisteration(Map userData) {
+   sdkRegisteration(Map userData) {
     throw UnimplementedError('sdkRegisteration() has not been implemented');
   }
 
-  void deepLinkData() {
+   deepLinkData(type) {
     throw UnimplementedError('deepLinkData() has not been implemented');
   }
 
-  void unReadNotification(String campaignId) {
+   unReadNotification(String campaignId) {
     throw UnimplementedError('unReadNotification() has not been implemented');
   }
   Future <int?> getUnReadNotificationCount() {
@@ -87,20 +87,23 @@ abstract class RefluttersdkPlatform extends PlatformInterface {
     throw UnimplementedError('getNotificationList() has not been implemented.');
   }
 
-  void screentracking(String screenName) {
+   screentracking(String screenName) {
     throw UnimplementedError('screentracking() has not been implemented.');
   }
 
-  void qrlink(String myLink) {
+   qrlink(String myLink) {
     throw UnimplementedError('qrlink() has not been implemented.');
   }
 
-  void notificationCTAClicked(String camplaignId, String actionId) {
+   notificationCTAClicked(String camplaignId, String actionId) {
     throw UnimplementedError('notificationCTAClicked() has not been implemented.');
   }
 
-  void getCampaignData() {
+   getCampaignData() {
     throw UnimplementedError('getCampaignData() has not been implemented');
   }
 
+  void listener(NotificationCallback channel){
+    throw UnimplementedError('setMethodChannel() has not been implemented');
+  }
 }

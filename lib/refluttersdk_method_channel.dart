@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:refluttersdk/refluttersdk.dart';
 
 import 'refluttersdk_platform_interface.dart';
 
@@ -9,59 +10,58 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   @visibleForTesting
   final methodChannel = const MethodChannel('refluttersdk');
 
-
   @override
-  locationUpdate(double lat, double lang) {
+  void locationUpdate(double lat, double lang) {
     methodChannel.invokeMapMethod('locationUpdate', {'lat': lat, 'lang': lang});
   }
 
   @override
-  addNewNotification(String notificationTitle, String notificationBody) {
+  void addNewNotification(String notificationTitle, String notificationBody) {
     methodChannel.invokeMapMethod('addNewNotification',{'title': notificationTitle,'body':notificationBody});
   }
 
   @override
-  customEvent(String event) {
+  void customEvent(String event) {
     methodChannel.invokeMethod('customEvent',event);
   }
 
   @override
-  void customEventWithData(Map eventData, String event) {
-    methodChannel.invokeMapMethod('customEventWithData',{"eventData":eventData,"event":event});
+  void customEventWithData(Map eventData) {
+    methodChannel.invokeMethod('customEventWithData',eventData);
   }
   @override
-  deleteNotificationByCampaignId(String campaignId) {
+  void deleteNotificationByCampaignId(String campaignId) {
     methodChannel.invokeMethod('deleteNotificationByCampaignId',campaignId);
   }
   @override
-  readNotification(String campaignId) {
-    methodChannel.invokeMapMethod('readNotification',campaignId);
+  void readNotification(String campaignId) {
+    methodChannel.invokeMethod('readNotification',campaignId);
   }
   @override
-  appConversion() {
-    methodChannel.invokeMapMethod('appConversion');
+  void appConversion() {
+    methodChannel.invokeMethod('appConversion');
   }
   @override
-  appConversionWithData(Map appConvertionData) {
+  void appConversionWithData(Map appConvertionData) {
     methodChannel.invokeMethod('appConversionWithData',appConvertionData);
   }
 
   @override
-  formDataCapture(Map formData) {
+  void formDataCapture(Map formData) {
     methodChannel.invokeMethod('formDataCapture',formData);
   }
 
   @override
-  updatePushToken(String regToken) {
-    methodChannel.invokeMapMethod('updatePushToken',regToken);
+  void updatePushToken(String regToken) {
+    methodChannel.invokeMethod('updatePushToken',regToken);
   }
   @override
-  sdkRegisteration(Map userData) {
+  void sdkRegisteration(Map userData) {
     methodChannel.invokeMethod('sdkRegisteration',userData);
   }
   @override
-  void deepLinkData() {
-    methodChannel.invokeMapMethod('deepLinkData');
+  void deepLinkData(type)  {
+    methodChannel.invokeMethod('deepLinkData',type);
   }
   @override
   Future<int?> getReadNotificationCount() async {
@@ -70,7 +70,7 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   }
 
   @override
-  unReadNotification(String campaignId) {
+  void unReadNotification(String campaignId) {
     methodChannel.invokeMethod('unReadNotification',campaignId);
   }
   @override
@@ -85,22 +85,56 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
     return nList;
   }
 @override
-void screentracking(String screenName) {
-  methodChannel.invokeMapMethod('screenTracking',{"screenname":screenName});
+  void screentracking(String screenName) {
+  methodChannel.invokeMethod('screenTracking',screenName);
 }
 
   @override
-  qrlink(String myLink){
+  void qrlink(String myLink){
     methodChannel.invokeMapMethod('qrlink',{"myLink":myLink});
   }
   @override
-  notificationCTAClicked(String camplaignId,String actionId){
+  void notificationCTAClicked(String camplaignId,String actionId){
     methodChannel.invokeMapMethod('notificationCTAClicked',{"campaignId":camplaignId,"actionId":actionId});
   }
   @override
-  getCampaignData(){
+  void getCampaignData(){
     methodChannel.invokeMethod('getCampaignData');
   }
 
+  @override
+  void listener(NotificationCallback channel) {
+    methodChannel
+        .setMethodCallHandler((call) => _notificationListener(channel, call));
+  }
+
+  _notificationListener(NotificationCallback callback, MethodCall call) async {
+    switch (call.method) {
+      case "didReceiveResponse":
+        {
+          print("Plugin didReceiveResponse" + call.arguments as String);
+          callback(call.arguments as String);
+        }
+        break;
+      case "didReceiveSmartLink":
+        {
+          print("Plugin didReceiveSmartLink" + call.arguments as String);
+          callback(call.arguments as String);
+        }
+        break;
+      case "didReceiveDeeplinkdata":
+        {
+          print("Plugin didReceiveDeeplinkdata" + call.arguments as String);
+          callback(call.arguments as String);
+        }
+        break;
+
+      default:
+        {
+          print("Default");
+        }
+        break;
+    }
+  }
 
 }

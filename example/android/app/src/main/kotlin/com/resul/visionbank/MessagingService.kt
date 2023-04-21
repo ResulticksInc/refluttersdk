@@ -1,4 +1,4 @@
-package com.resul.refluttersdk_example
+package com.resul.visionbank
 import android.content.Intent
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -7,6 +7,7 @@ import android.os.Bundle
 import com.resul.refluttersdk.RefluttersdkPlugin
 
 class MessagingService : FirebaseMessagingService(){
+
     lateinit var token:String
     val bundle = Bundle()
     override fun onNewToken(tokken: String) {
