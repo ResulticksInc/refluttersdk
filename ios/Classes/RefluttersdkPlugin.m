@@ -10,13 +10,33 @@
 
 @implementation RefluttersdkPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [SwiftRefluttersdkPlugin registerWithRegistrar:registrar];
+    [SwiftRefluttersdkPlugin registerWithRegistrar:registrar];
 }
-+(void)initWithSDK:(NSString *)appId {
-    //[SwiftRefluttersdkPlugin reSdkWith:appId];
-    [SwiftRefluttersdkPlugin reSdkWith:appId];
+-(void)initWithSDK:(NSString *)appId {
+    SwiftRefluttersdkPlugin *obj = [[SwiftRefluttersdkPlugin alloc]init];
+    [obj reSdkWith:appId];
 }
-+(void)testMethod:(NSString *)name {
-    [SwiftRefluttersdkPlugin testMethodWith:@"Rajaram"];
++(void)willPresentNotification:(UNNotification *)notification
+         withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler{
+    [SwiftRefluttersdkPlugin setForegroundNotificationWithNotification:notification completionHandler:completionHandler];
+}
++(void)didReceiveRemoteNotification:(nonnull NSDictionary *)userInfo{
+    [SwiftRefluttersdkPlugin setCustomNotificationWithUserInfo:userInfo];
+}
++(void)didReceiveNotificationResponse:(UNNotificationResponse *)response {
+    [SwiftRefluttersdkPlugin setNotificationActionWithResponse:response];
+}
++(void)openURL:(NSURL *)url{
+    [SwiftRefluttersdkPlugin openUrlWithUrl:url];
+}
++ (void)handleDynamicLinkWithUserActivity:(NSUserActivity *)userActivity
+                            successHandler:(void (^)(NSString *returnData))successHandler
+                           failureHandler:(void (^)(NSString *error))failureHandler{
+    [SwiftRefluttersdkPlugin handleDynamicLinkWithUserActivity:userActivity successHandler:^(NSString * data) {
+        successHandler(data);
+    } failureHandler:^(NSString * err) {
+        failureHandler(err);
+    }];
+    
 }
 @end
