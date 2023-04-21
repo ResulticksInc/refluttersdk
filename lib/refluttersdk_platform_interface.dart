@@ -29,10 +29,6 @@ abstract class RefluttersdkPlatform extends PlatformInterface {
     throw UnimplementedError('locationUpdate() has not been implemented');
   }
 
-   addNewNotification(String notificationTitle, String notificationBody){
-    throw UnimplementedError('newNotification() has not been implemented');
-  }
-
    customEvent(String event) {
     throw UnimplementedError('customEvent() has not been implemented');
   }
@@ -91,19 +87,8 @@ abstract class RefluttersdkPlatform extends PlatformInterface {
     throw UnimplementedError('screentracking() has not been implemented.');
   }
 
-   qrlink(String myLink) {
-    throw UnimplementedError('qrlink() has not been implemented.');
-  }
-
-   notificationCTAClicked(String camplaignId, String actionId) {
-    throw UnimplementedError('notificationCTAClicked() has not been implemented.');
-  }
-
-   getCampaignData() {
-    throw UnimplementedError('getCampaignData() has not been implemented');
-  }
-
   void listener(NotificationCallback channel){
     throw UnimplementedError('setMethodChannel() has not been implemented');
   }
+
 }

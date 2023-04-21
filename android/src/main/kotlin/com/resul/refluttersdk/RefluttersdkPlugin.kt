@@ -22,12 +22,7 @@ import kotlin.collections.HashMap
 /** RefluttersdkPlugin */
 class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
     Application.ActivityLifecycleCallbacks {
-    /// The MethodChannel that will the communication between Flutter and native Android
-    ///
-    /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-    /// when the Flutter Engine is detached from the Activity
     lateinit var methodChannelDeeplink: MethodChannel
-   // lateinit var activityMethodChannel: MethodChannel
     private lateinit var context: Context
     private lateinit var activity: Activity
     private lateinit var channel: MethodChannel
@@ -42,8 +37,6 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "refluttersdk")
-       /* activityMethodChannel =
-            MethodChannel(flutterPluginBinding.binaryMessenger, "SDKActivityChannel")*/
         channel.setMethodCallHandler(this)
         context = flutterPluginBinding.applicationContext
         methodChannelDeeplink = MethodChannel(flutterPluginBinding.binaryMessenger, "SDKChannel")
@@ -88,7 +81,6 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
             }
             "customEventWithData" -> {
                 val eventDataMap = call.arguments as Map<String,Any>
-                print(eventDataMap)
                 val name = eventDataMap.get("name") as String
                 val cdata = eventDataMap.get("data") as Map<String,Any>
                 val jObject = JSONObject(cdata)
@@ -103,7 +95,6 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
                     sCalendar = Calendar.getInstance()
                     if (OldScreenName != null) {
                         activity = Activity()
-                        // context=mycontext
                         AppLifecyclePresenter.getInstance()
                             .onSessionStop(
                                 context,
@@ -127,7 +118,6 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
                     ReAndroidSDK.getInstance(context).notificationByObject
                 val gson = Gson()
                 val nList = gson.toJson(notificationList)
-                print("HashMap :: $nList")
                 result.success(nList)
             }
             "deleteNotificationByCampaignId" -> {
@@ -152,13 +142,6 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
                     ReAndroidSDK.getInstance(context).onLocationUpdate(lat, lang)
                 }
             }
-            "addNewNotification" -> {
-                ReAndroidSDK.getInstance(context).addNewNotification(
-                    call.argument("title"),
-                    call.argument("body"),
-                    "MainActivity"
-                )
-            }
             "appConversion" -> {
                 ReAndroidSDK.getInstance(context).appConversionTracking()
             }
@@ -167,12 +150,8 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
                 ReAndroidSDK.getInstance(context).appConversionTracking(appConvertionDataJObj)
             }
             "deepLinkData" -> {
-                print("DeepLink called!!!")
-
                 var type: String = call.arguments as String;
-
                 if (type == "URL") {
-
                     ReAndroidSDK.getInstance(context).getCampaignData(object : IDeepLinkInterface {
                         override fun onInstallDataReceived(data: String) {
                             try {
@@ -183,40 +162,21 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
                             }
                             Log.e("onInstallDataReceived", data)
                         }
-
                         override fun onDeepLinkData(data: String) {
-                            Log.e("onDeepLinkData", data)
                             try {
                                 methodChannelDeeplink.invokeMethod("onDeepLinkData", data)
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
+                            Log.e("onDeepLinkData", data)
                         }
                     })
                 } else {
                     if (deepData != null) {
                         methodChannelDeeplink.invokeMethod("onDeepLinkData", deepData)
                     }
-
                 }
             }
-            "qrlink" -> {
-                class MyIGetQR : IGetQRLinkDetail {
-                    override fun onSmartLinkDetails(p0: String?) {
-                    }
-
-                    override fun onError(p0: String?) {
-                    }
-                }
-
-                val myLink: String? = call.argument("myLink")
-                ReAndroidSDK.getInstance(context).handleQrLink(myLink, MyIGetQR())
-            }
-            "notificationCTAClicked" -> {
-                ReAndroidSDK.getInstance(context)
-                    .notificationCTAClicked(call.argument("campaignId"), call.argument("actionId"))
-            }
-
             else -> {
                 result.notImplemented()
             }
@@ -236,7 +196,6 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
                 // Log.e("values", "" + map.get(key));
                 jsonObject.put(key, value)
             }
-            Log.e("Push Notification", "" + jsonObject.toString())
             return jsonObject
         } catch (e: java.lang.Exception) {
             ExceptionTracker.track(e)
@@ -247,11 +206,11 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
     fun initReSdk(flutterContext: Context) {
         ReAndroidSDK.getInstance(flutterContext)
         AppConstants.LogFlag = true
-        io.flutter.Log.d("initsdk", "SDK initialized1")
+
     }
 
     fun clientMessageReceiver(remoteMessage: RemoteMessage, flutterContext: Context) {
-        io.flutter.Log.d("msgTrace", "From native code!!!!")
+
         ReAndroidSDK.getInstance(flutterContext).onReceivedCampaign(remoteMessage.data)
     }
 
@@ -274,7 +233,6 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
                              activityMethodChannel.invokeMethod("intentData", data.toString())*/
                     }
                 }
-                // todo screen deeplink
             } catch (e: java.lang.Exception) {
             }
         }

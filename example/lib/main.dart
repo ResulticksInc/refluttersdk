@@ -1,19 +1,15 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
-
 import 'package:refluttersdk/refluttersdk.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:uni_links/uni_links.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -41,14 +37,26 @@ class _MyAppState extends State<MyApp> {
   late String nList;
   TextEditingController controller1 = TextEditingController();
 
+
+  Future<void> setupInteractedMessage() async {
+    RemoteMessage? initialMessage =
+    await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      getdeepLinkData();
+    }
+  }
+
+
   @override
   void initState() {
     super.initState();
     Firebase.initializeApp();
-   /// _initURIHandler();
-   // _incomingLinkHandler();
-    //initiateMethodChannel();
     getdeepLinkData();
+    setupInteractedMessage();
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      getdeepLinkData();
+    },);
   }
 
   passLocation() {
@@ -57,12 +65,6 @@ class _MyAppState extends State<MyApp> {
     _refluttersdkPlugin.locationUpdate(lat, lang);
   }
 
-  newNotification() {
-    var notificationTitle = "sample Title";
-    var notificationBody = "sample Body";
-    _refluttersdkPlugin.addNewNotification(
-        notificationTitle, notificationBody);
-  }
 
   customEvent() {
     var content = "On Track Event called!!!";
@@ -97,7 +99,8 @@ class _MyAppState extends State<MyApp> {
     Map appConvertionData={
       "name":"xyrr",
       "age":"23",
-      "city":"dhajf"};
+      "city":"dhajf"
+    };
     _refluttersdkPlugin.appConversionWithData(appConvertionData);
   }
 
@@ -147,38 +150,16 @@ class _MyAppState extends State<MyApp> {
  
 
   getdeepLinkData() {
-    _refluttersdkPlugin.deepLinkData((String data)=> {
-      //showAlert(bcontext,data)
-       print('onInstallDataReceived :: $data')
-    });
+    print('getdeepLinkData 1::  Called');
+    _refluttersdkPlugin.deepLinkData(deeplinkData);
   }
 
-// receiveDeeplink(String data){
-//     print("Deeplink Received :: $data");
-// }
-//   getdeepLinkData() {
-//     _refluttersdkPlugin.deepLinkData(receiveDeeplink);
-//   }
-
-
-  void showAlert(BuildContext context,String type) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          Future.delayed(Duration(seconds: 2), () {
-            Navigator.of(context).pop(true);
-          });
-          return AlertDialog(
-            title: Text('Notification firebase'),
-            content: Text( "Message state:${type} "),
-          );
-        });
+  deeplinkData (String data) {
+    print('onInstallDataReceived :: $data');
   }
-
-
 
   readnotificationCount() async {
-    var rnCount = await _refluttersdkPlugin.getReadNotificationCount()!;
+    var rnCount = await _refluttersdkPlugin.getReadNotificationCount();
     setState(() {
       notificationCount = rnCount!;
     });
@@ -196,27 +177,10 @@ class _MyAppState extends State<MyApp> {
     print("GetNotificationList::$notificationList");
   }
 
-
-subscribeForNotification() async {
- await FirebaseMessaging.instance.subscribeToTopic("resul");
-}
-unSubscribeFromNotification() {
-  FirebaseMessaging.instance.unsubscribeFromTopic("resul");
-}
-
-  void onInastallDataReceived(String message) {
-    print('onInstallDataReceived :: $message');
-  }
-  void onDeepLinkData(String message) {
-    print('onDeepLinkData :: $message');
-  }
-
-
-   var bcontext ;
 // Platform messages are asynchronous, so we initialize in an async method.
   @override
   Widget build(BuildContext context) {
-    bcontext =context;
+
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
@@ -245,14 +209,6 @@ unSubscribeFromNotification() {
                           child: ElevatedButton(onPressed: () {
                             passLocation();
                           }, child: Text("Update Location"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-
-                            onPressed: () {
-                              newNotification();
-                            }, child: Text("Add New Notification"),),
                         ),
                         SizedBox(
                           width: double.infinity,
@@ -331,91 +287,15 @@ unSubscribeFromNotification() {
                             appconversionTrackingWithData();
                           }, child: Text("AppConvertionTrackingWithData"),),
                         ),
-
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            _refluttersdkPlugin.screentracking("Screen1");
-                          },
-                            style:
-                            ElevatedButton.styleFrom(
-                              minimumSize: Size.fromHeight(40),), child: Text("Screen-1"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            _refluttersdkPlugin.screentracking("Screen-1");
-                          },style:
-                          ElevatedButton.styleFrom(
-                            minimumSize: Size.fromHeight(40),), child: Text("Screen-2"),),
-                        ),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(onPressed: () {
                             style:
                             ElevatedButton.styleFrom(
                               minimumSize: Size.fromHeight(40),);
-                            _refluttersdkPlugin.screentracking("Screen3");
-                          }, child: Text("Screen-3"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            style:
-                            ElevatedButton.styleFrom(
-                              minimumSize: Size.fromHeight(40),);
-                            _refluttersdkPlugin.qrlink(
-                                "http://myolaapp.page.link/start");
-                          }, child: Text("QR-Link"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            style:
-                            ElevatedButton.styleFrom(
-                              minimumSize: Size.fromHeight(40),);
-                            _refluttersdkPlugin.notificationCTAClicked(
-                                "c_id12", "a_id34");
-                          }, child: Text("NotificationCTAClicked"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            style:
-                            ElevatedButton.styleFrom(
-                              minimumSize: Size.fromHeight(40),);
-                            _refluttersdkPlugin.getCampaiginData();
-                          }, child: Text("GetCampaignData"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            style:
-                            ElevatedButton.styleFrom(
-                              minimumSize: Size.fromHeight(40),);
-                            // _refluttersdkPlugin.deepLinkData();
-                            getdeepLinkData();
+                           getdeepLinkData();
                           }, child: Text("GetDeepLinkData"),),
                         ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            style:
-                            ElevatedButton.styleFrom(
-                              minimumSize: Size.fromHeight(40),);
-                             subscribeForNotification();
-                          }, child: Text("Subscribe Notification"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            style:
-                            ElevatedButton.styleFrom(
-                              minimumSize: Size.fromHeight(40),);
-                           unSubscribeFromNotification();
-                          }, child: Text("UnSubscribe Notification"),),
-                        ),
-
                       ],
                     ),
                   )

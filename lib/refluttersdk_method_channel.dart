@@ -14,17 +14,10 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   void locationUpdate(double lat, double lang) {
     methodChannel.invokeMapMethod('locationUpdate', {'lat': lat, 'lang': lang});
   }
-
-  @override
-  void addNewNotification(String notificationTitle, String notificationBody) {
-    methodChannel.invokeMapMethod('addNewNotification',{'title': notificationTitle,'body':notificationBody});
-  }
-
   @override
   void customEvent(String event) {
     methodChannel.invokeMethod('customEvent',event);
   }
-
   @override
   void customEventWithData(Map eventData) {
     methodChannel.invokeMethod('customEventWithData',eventData);
@@ -84,23 +77,10 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
     var nList = await methodChannel.invokeMethod('getNotificationList');
     return nList;
   }
-@override
+ @override
   void screentracking(String screenName) {
   methodChannel.invokeMethod('screenTracking',screenName);
-}
-
-  @override
-  void qrlink(String myLink){
-    methodChannel.invokeMapMethod('qrlink',{"myLink":myLink});
-  }
-  @override
-  void notificationCTAClicked(String camplaignId,String actionId){
-    methodChannel.invokeMapMethod('notificationCTAClicked',{"campaignId":camplaignId,"actionId":actionId});
-  }
-  @override
-  void getCampaignData(){
-    methodChannel.invokeMethod('getCampaignData');
-  }
+ }
 
   @override
   void listener(NotificationCallback channel) {

@@ -11,12 +11,6 @@ class Refluttersdk {
   void locationUpdate(double lat, double lang) {
     RefluttersdkPlatform.instance.locationUpdate(lat, lang);
   }
-
-  void addNewNotification(String notificationTitle, String notificationBody) {
-    RefluttersdkPlatform.instance
-        .addNewNotification(notificationTitle, notificationBody);
-  }
-
   void customEvent(String event) {
     RefluttersdkPlatform.instance.customEvent(event);
   }
@@ -103,24 +97,28 @@ class Refluttersdk {
     MethodChannel  deepLinkMethodChannel = const MethodChannel("SDKChannel");
     deepLinkMethodChannel.setMethodCallHandler((call) async {
       if (call.method == 'onInstallDataReceived') {
-        if (deeplinkCallBack) deeplinkCallBack.call(call.arguments);
+        print('getdeepLinkData 3::  Called');
+
+         deeplinkCallBack.call(call.arguments);
         // onInstallDataReceived(call.arguments);
       } else if (call.method == 'onDeepLinkData') {
         // onDeepLinkData(call.arguments);
-        if (deeplinkCallBack) deeplinkCallBack.call(call.arguments);
+        print('getdeepLinkData 3::  Called');
+
+         deeplinkCallBack.call(call.arguments);
       }
     });
     RefluttersdkPlatform.instance.deepLinkData(type);
   }
 
-   var deeplinkCallBack;
+   static var deeplinkCallBack;
 
   void deepLinkData(Function deeplink) {
+    print('getdeepLinkData 2::  Called');
      deeplinkCallBack = deeplink;
     _initURIHandler();
     _incomingLinkHandler();
-     //RefluttersdkPlatform.instance.deepLinkData("activity");
-
+    getURLData("Activity");
   }
 
   void unReadNotification(String campaignId) {
@@ -136,19 +134,9 @@ class Refluttersdk {
     RefluttersdkPlatform.instance.screentracking(screenName);
   }
 
-  void qrlink(String myLink) {
-    RefluttersdkPlatform.instance.qrlink(myLink);
-  }
-
-  void notificationCTAClicked(String camplaignId, String actionId) {
-    RefluttersdkPlatform.instance.notificationCTAClicked(camplaignId, actionId);
-  }
-
-  void getCampaiginData() {
-    RefluttersdkPlatform.instance.getCampaignData();
-  }
 
   listener(NotificationCallback channel){
     RefluttersdkPlatform.instance.listener(channel);
   }
+
 }
