@@ -21,7 +21,9 @@ class MessagingService : FirebaseMessagingService(){
         intent.putExtra("message",remoteMessage.notification?.title);
         sendBroadcast(intent);
         Log.d("msgTrace", "RemoteMessage!!!!")
-        RefluttersdkPlugin().clientMessageReceiver(remoteMessage,this)
+         if(RefluttersdkPlugin().onReceivedCampaign(remoteMessage,this)){
+             return
+         }
      }
 
 }

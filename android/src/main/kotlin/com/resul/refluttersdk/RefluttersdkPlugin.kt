@@ -22,24 +22,22 @@ import kotlin.collections.HashMap
 /** RefluttersdkPlugin */
 class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
     Application.ActivityLifecycleCallbacks {
-    lateinit var methodChannelDeeplink: MethodChannel
     private lateinit var context: Context
     private lateinit var activity: Activity
     private lateinit var channel: MethodChannel
 
-    var deepData: String? = null
+    private var oldCalendar = Calendar.getInstance()
+    private var sCalendar = Calendar.getInstance()
 
+    var deepData: String? = null
     var OldScreenName: String? = null
     var newScreenName: String? = null
 
-    private var oldCalendar = Calendar.getInstance()
-    private var sCalendar = Calendar.getInstance()
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "refluttersdk")
         channel.setMethodCallHandler(this)
         context = flutterPluginBinding.applicationContext
-        methodChannelDeeplink = MethodChannel(flutterPluginBinding.binaryMessenger, "SDKChannel")
         var app: Application = flutterPluginBinding.applicationContext as Application
         app.registerActivityLifecycleCallbacks(this)
 
@@ -68,6 +66,9 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
                 mRegisterUser.adId = userDataJObj.getString("storeId")
 
                 ReAndroidSDK.getInstance(context).onDeviceUserRegister(mRegisterUser)
+            }
+            "addNotification" -> {
+                ReAndroidSDK.getInstance(context).addNewNotification("Test","Test","","");
             }
             "updatePushToken" -> {
                 ReAndroidSDK.getInstance(context).updatePushToken(call.arguments())
@@ -108,7 +109,6 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
                             .onSessionStartFragment(activity, OldScreenName, null)
                     }
                     if (newScreenName == null) newScreenName = screenName
-                    // screenTracking(screenName)
                 }
                 OldScreenName = newScreenName
                 newScreenName = screenName
@@ -155,25 +155,23 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
                     ReAndroidSDK.getInstance(context).getCampaignData(object : IDeepLinkInterface {
                         override fun onInstallDataReceived(data: String) {
                             try {
-                                methodChannelDeeplink.invokeMethod("onInstallDataReceived", data)
+                                channel.invokeMethod("onInstallDataReceived", data)
 
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
-                            Log.e("onInstallDataReceived", data)
                         }
                         override fun onDeepLinkData(data: String) {
                             try {
-                                methodChannelDeeplink.invokeMethod("onDeepLinkData", data)
+                                channel.invokeMethod("onDeepLinkData", data)
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
-                            Log.e("onDeepLinkData", data)
                         }
                     })
                 } else {
                     if (deepData != null) {
-                        methodChannelDeeplink.invokeMethod("onDeepLinkData", deepData)
+                        channel.invokeMethod("onDeepLinkData", deepData)
                     }
                 }
             }
@@ -192,8 +190,6 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
             for (o in parameters) {
                 val key = "" + o
                 val value = "" + map[key]
-                // Log.e("key", "" + o);
-                // Log.e("values", "" + map.get(key));
                 jsonObject.put(key, value)
             }
             return jsonObject
@@ -205,13 +201,10 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
 
     fun initReSdk(flutterContext: Context) {
         ReAndroidSDK.getInstance(flutterContext)
-        AppConstants.LogFlag = true
-
     }
 
-    fun clientMessageReceiver(remoteMessage: RemoteMessage, flutterContext: Context) {
-
-        ReAndroidSDK.getInstance(flutterContext).onReceivedCampaign(remoteMessage.data)
+    fun onReceivedCampaign(remoteMessage: RemoteMessage, flutterContext: Context):Boolean{
+        return ReAndroidSDK.getInstance(flutterContext).onReceivedCampaign(remoteMessage.data)
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -219,6 +212,9 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+    }
+
+    override fun onActivityStarted(activity: Activity) {
         if (activity.intent != null && activity.intent.extras != null) {
             try {
                 val bundle = activity.intent.extras
@@ -229,18 +225,12 @@ class RefluttersdkPlugin : FlutterPlugin, MethodCallHandler,
                         val jsonObject = JSONObject(bundle.getString("customParams", ""))
                         val data = getIntent(bundle);
                         deepData = data.toString();
-                        /* if(methodChannelDeeplink!=null)
-                             activityMethodChannel.invokeMethod("intentData", data.toString())*/
+                        channel.invokeMethod("onDeepLinkData",data.toString())
                     }
                 }
             } catch (e: java.lang.Exception) {
             }
         }
-
-
-    }
-
-    override fun onActivityStarted(activity: Activity) {
     }
 
     override fun onActivityResumed(activity: Activity) {

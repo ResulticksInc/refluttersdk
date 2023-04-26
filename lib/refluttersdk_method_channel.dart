@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:refluttersdk/refluttersdk.dart';
-
 import 'refluttersdk_platform_interface.dart';
 
 /// An implementation of [RefluttersdkPlatform] that uses method channels.
@@ -13,6 +12,10 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   @override
   void locationUpdate(double lat, double lang) {
     methodChannel.invokeMapMethod('locationUpdate', {'lat': lat, 'lang': lang});
+  }
+  @override
+  void addNewNotification() {
+    methodChannel.invokeMethod('addNotification');
   }
   @override
   void customEvent(String event) {
@@ -58,8 +61,8 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   }
   @override
   Future<int?> getReadNotificationCount() async {
-    final notifyCount=await methodChannel.invokeMethod<int>('getReadNotificationCount');
-    return notifyCount;
+    final readNotificationCount=await methodChannel.invokeMethod<int>('getReadNotificationCount');
+    return readNotificationCount;
   }
 
   @override
@@ -68,19 +71,19 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   }
   @override
   Future <int?> getUnReadNotificationCount() async {
-    final ur_nCount= await methodChannel.invokeMethod('getUnReadNotificationCount');
-    return ur_nCount;
+    final unReadNotificationCount= await methodChannel.invokeMethod('getUnReadNotificationCount');
+    return unReadNotificationCount;
   }
 
   @override
   Future<dynamic> getNotificationList() async {
-    var nList = await methodChannel.invokeMethod('getNotificationList');
-    return nList;
+    var notificationList = await methodChannel.invokeMethod('getNotificationList');
+    return notificationList;
   }
- @override
+  @override
   void screentracking(String screenName) {
-  methodChannel.invokeMethod('screenTracking',screenName);
- }
+    methodChannel.invokeMethod('screenTracking',screenName);
+  }
 
   @override
   void listener(NotificationCallback channel) {
@@ -92,22 +95,29 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
     switch (call.method) {
       case "didReceiveResponse":
         {
-          print("Plugin didReceiveResponse" + call.arguments as String);
           callback(call.arguments as String);
         }
         break;
       case "didReceiveSmartLink":
         {
-          print("Plugin didReceiveSmartLink" + call.arguments as String);
           callback(call.arguments as String);
         }
         break;
       case "didReceiveDeeplinkdata":
         {
-          print("Plugin didReceiveDeeplinkdata" + call.arguments as String);
           callback(call.arguments as String);
         }
         break;
+      case "onDeepLinkData":{
+        {
+          callback(call.arguments as String);
+        }
+        break;
+      }
+      case "onInstallDataReceived":{
+        callback(call.arguments as String);
+      }
+      break;
 
       default:
         {

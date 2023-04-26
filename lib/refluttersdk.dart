@@ -40,24 +40,29 @@ class Refluttersdk {
   }
 
   Future<int?> getReadNotificationCount() async {
-    var r_Ncount = RefluttersdkPlatform.instance.getReadNotificationCount();
-    return r_Ncount;
+    var readNotificationCount = RefluttersdkPlatform.instance.getReadNotificationCount();
+    return readNotificationCount;
   }
 
   Future<int?> getUnReadNotificationCount() async {
-    var un_Ncount =
+    var unReadNotificationCount =
         await RefluttersdkPlatform.instance.getUnReadNotificationCount();
-    return un_Ncount;
+    return unReadNotificationCount;
   }
 
   void updatePushToken(String token) {
     RefluttersdkPlatform.instance.updatePushToken(token);
+  }
+  void addNewNotification() {
+    RefluttersdkPlatform.instance
+        .addNewNotification();
   }
 
   void sdkRegisteration(Map userData) {
     RefluttersdkPlatform.instance.sdkRegisteration(userData);
   }
   bool _initialURILinkHandled = false;
+
   Uri? _initialURI;
   Uri? _currentURI;
   Object? _err;
@@ -83,7 +88,6 @@ class Refluttersdk {
   }
 
   void _incomingLinkHandler() {
-    //
     if (!kIsWeb) {
       _streamSubscription = uriLinkStream.listen((Uri? uri) {
         getURLData("URL");
@@ -94,28 +98,10 @@ class Refluttersdk {
 
 
   getURLData(String type) {
-    MethodChannel  deepLinkMethodChannel = const MethodChannel("SDKChannel");
-    deepLinkMethodChannel.setMethodCallHandler((call) async {
-      if (call.method == 'onInstallDataReceived') {
-        print('getdeepLinkData 3::  Called');
-
-         deeplinkCallBack.call(call.arguments);
-        // onInstallDataReceived(call.arguments);
-      } else if (call.method == 'onDeepLinkData') {
-        // onDeepLinkData(call.arguments);
-        print('getdeepLinkData 3::  Called');
-
-         deeplinkCallBack.call(call.arguments);
-      }
-    });
     RefluttersdkPlatform.instance.deepLinkData(type);
   }
 
-   static var deeplinkCallBack;
-
-  void deepLinkData(Function deeplink) {
-    print('getdeepLinkData 2::  Called');
-     deeplinkCallBack = deeplink;
+  void deepLinkData() {
     _initURIHandler();
     _incomingLinkHandler();
     getURLData("Activity");
@@ -126,8 +112,8 @@ class Refluttersdk {
   }
 
   Future<dynamic> getNotificationList() async {
-    var nList = await RefluttersdkPlatform.instance.getNotificationList();
-    return nList;
+    var notificationList = await RefluttersdkPlatform.instance.getNotificationList();
+    return notificationList;
   }
 
   void screentracking(String screenName) {

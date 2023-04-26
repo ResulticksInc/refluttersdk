@@ -6,11 +6,11 @@ import REIOSSDK
 
 
 public class SwiftRefluttersdkPlugin: NSObject, FlutterPlugin,REiosSmartLinkReceiver,REiosNotificationReceiver {
-    
+
     static var reRegister: FlutterPluginRegistrar?
-    
+
   public static func register(with registrar: FlutterPluginRegistrar) {
-      
+
       reRegister = registrar
     let channel = FlutterMethodChannel(name: "refluttersdk", binaryMessenger: registrar.messenger())
     let instance = SwiftRefluttersdkPlugin()
@@ -32,17 +32,17 @@ public class SwiftRefluttersdkPlugin: NSObject, FlutterPlugin,REiosSmartLinkRece
             let channel = FlutterMethodChannel(name: "refluttersdk", binaryMessenger: _register.messenger())
             channel.invokeMethod("didReceiveSmartLink", arguments: data.json)
         }
-       
-        
+
+
     }
-    
+
     public func didReceiveResponse(data: [String : Any]) {
         if let _register = SwiftRefluttersdkPlugin.reRegister {
             let channel = FlutterMethodChannel(name: "refluttersdk", binaryMessenger: _register.messenger())
             channel.invokeMethod("didReceiveResponse", arguments: data.json)
         }
     }
-    
+
     @objc
     public static func setForegroundNotification(notification: UNNotification, completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         REiosHandler.setForegroundNotification(notification: notification) { handler in
@@ -65,7 +65,7 @@ public class SwiftRefluttersdkPlugin: NSObject, FlutterPlugin,REiosSmartLinkRece
                 channel.invokeMethod("didReceiveDeeplinkdata", arguments: returnData)
             }
         } failureHandler: { error in
-        
+
         }
 
     }
@@ -80,10 +80,9 @@ public class SwiftRefluttersdkPlugin: NSObject, FlutterPlugin,REiosSmartLinkRece
         } failureHandler: { error in
             failureHandler(error)
         }
+ }
 
-    }
 
-   
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
       switch(call.method){
       case "sdkRegisteration":
@@ -115,7 +114,7 @@ public class SwiftRefluttersdkPlugin: NSObject, FlutterPlugin,REiosSmartLinkRece
                 }
             }
           break;
-    
+
       case "unReadNotification":
             if let campaignId = call.arguments as? String {
                 REiosHandler.unReadNotification(campaignId: campaignId) { (count) in
@@ -178,8 +177,8 @@ public class SwiftRefluttersdkPlugin: NSObject, FlutterPlugin,REiosSmartLinkRece
         if let screenName = call.arguments as? String {
             REiosHandler.setScreenName(screenName: screenName)
         }
-          
-          
+
+
       default:
           print("Not implemented")
       }
@@ -187,11 +186,11 @@ public class SwiftRefluttersdkPlugin: NSObject, FlutterPlugin,REiosSmartLinkRece
 }
 
 extension Array {
-    
+
     var json: String? {
-        
+
         let invalidJson: String? = nil
-        
+
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
             return String(bytes: jsonData, encoding: String.Encoding.utf8) ?? invalidJson
@@ -201,11 +200,11 @@ extension Array {
     }
 }
 extension Dictionary {
-    
+
     var json: String? {
-        
+
         let invalidJson: String? = nil
-        
+
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
             return String(bytes: jsonData, encoding: String.Encoding.utf8) ?? invalidJson

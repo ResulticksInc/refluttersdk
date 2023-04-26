@@ -5,7 +5,8 @@ import 'dart:async';
 import 'package:refluttersdk/refluttersdk.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
+import 'package:get/get.dart';
+import 'package:uni_links/uni_links.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,10 +28,10 @@ class _MyAppState extends State<MyApp> {
   Uri? _currentURI;
   Object? _err;
   StreamSubscription? _streamSubscription;
-  
+
   String _platformVersion = 'Unknown';
   final _refluttersdkPlugin = Refluttersdk();
-      String token = "dEHA8nVPTq6wHFINot8wu-:APA91bHGLIoi2wp2tPmzMuVSqFtC3_KnB4lyXnzGhezi9MMwTiFzxrr1flBo_ltcgh0nI22QuXdStKk7W7mxA9MftHU15NmZKpcvRrcTXEUYAI1dkIpkqwzYpUl3jFKz8Bm9JDK-uf9m";
+  String token = "dEHA8nVPTq6wHFINot8wu-:APA91bHGLIoi2wp2tPmzMuVSqFtC3_KnB4lyXnzGhezi9MMwTiFzxrr1flBo_ltcgh0nI22QuXdStKk7W7mxA9MftHU15NmZKpcvRrcTXEUYAI1dkIpkqwzYpUl3jFKz8Bm9JDK-uf9m";
   int notificationCount = 0,
       _counter = 0;
   late String cid;
@@ -43,7 +44,7 @@ class _MyAppState extends State<MyApp> {
     await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
-      getdeepLinkData();
+     // getdeepLinkData();
     }
   }
 
@@ -52,11 +53,20 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     Firebase.initializeApp();
-    getdeepLinkData();
+     getdeepLinkData();
     setupInteractedMessage();
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      getdeepLinkData();
+      // getdeepLinkData();
     },);
+    _getFcmToken();
+    _refluttersdkPlugin.listener((data) {
+      print("Deeplink Data $data");
+    });
+  }
+  Future<void> _getFcmToken() async {
+    String? token = await FirebaseMessaging.instance.getToken();
+    print('Fcm Token: $token');
+
   }
 
   passLocation() {
@@ -65,6 +75,11 @@ class _MyAppState extends State<MyApp> {
     _refluttersdkPlugin.locationUpdate(lat, lang);
   }
 
+  newNotification() {
+    var notificationTitle = "sample Title";
+    var notificationBody = "sample Body";
+    //_refluttersdkPlugin.addNewNotification();
+  }
 
   customEvent() {
     var content = "On Track Event called!!!";
@@ -95,11 +110,14 @@ class _MyAppState extends State<MyApp> {
   appconversionTracking() {
     _refluttersdkPlugin.appConversion();
   }
+
   appconversionTrackingWithData() {
     Map appConvertionData={
       "name":"xyrr",
-      "age":"23",
-      "city":"dhajf"
+      "data":{
+        "age":"23",
+        "city":"yyy"
+      }
     };
     _refluttersdkPlugin.appConversionWithData(appConvertionData);
   }
@@ -147,11 +165,12 @@ class _MyAppState extends State<MyApp> {
     };
     _refluttersdkPlugin.sdkRegisteration(userData);
   }
- 
+
 
   getdeepLinkData() {
     print('getdeepLinkData 1::  Called');
-    _refluttersdkPlugin.deepLinkData(deeplinkData);
+
+    _refluttersdkPlugin.deepLinkData();
   }
 
   deeplinkData (String data) {
@@ -169,7 +188,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   unReadnotificationCount() async {
-    var unreadCount = await _refluttersdkPlugin.getUnReadNotificationCount()!;
+    var unreadCount = await _refluttersdkPlugin.getUnReadNotificationCount();
     print("unReadNotificationCount::$unreadCount");
   }
   getNotificationList() async{
@@ -177,131 +196,184 @@ class _MyAppState extends State<MyApp> {
     print("GetNotificationList::$notificationList");
   }
 
-// Platform messages are asynchronous, so we initialize in an async method.
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
-      home: Scaffold(
-          appBar: AppBar(
-            title: const Text('ReFlutter - Sdk'),
-          ),
-          body: SingleChildScrollView(
-              child:ConstrainedBox(
-                  constraints: BoxConstraints(),
-                  child:Container(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () { //
-                            ondeviceRegister();
-                          }, child: Text("On Device User Register"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            updatepushToken();
-                          }, child: Text("update Push Token"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            passLocation();
-                          }, child: Text("Update Location"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            readnotification();
-                          }, child: Text("Read Notification By Id"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            unreadNotification();
-                          }, child: Text("UnRead Notification BY Id"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            getNotificationList();
-                          }, child: Text("Get Notification List"),),
-                        ),
+        routes:{
+          '/phonefield' :(BuildContext contxt)=> Screen1(),
+          '/3vx5fd' :(BuildContext contxt)=> Screen2()
+        },
 
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            readnotificationCount();
-                          }, child: const Text("Read Notification Count"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                          unReadnotificationCount();
-                          }, child: const Text("Un_Read_Notification_Count"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            deleteNotificationByCampaignid();
-                            setState(() {
-                              controller1.clear();
-                            });
-                          }, child: Text("Delete Notification By CampaignId"),),
-                        ),
+        home: Scaffold(
+            appBar: AppBar(
+              title: const Text('ReFlutter - Sdk'),
+            ),
+            body: SingleChildScrollView(
+                child:ConstrainedBox(
+                    constraints: BoxConstraints(),
+                    child:Container(
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () { //
+                              ondeviceRegister();
+                            }, child: Text("On Device User Register"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () { //
+                              newNotification();
+                            }, child: Text("Add Notification")),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              updatepushToken();
+                            }, child: Text("update Push Token"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              passLocation();
+                            }, child: Text("Update Location"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              readnotification();
+                            }, child: Text("Read Notification By Id"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              unreadNotification();
+                            }, child: Text("UnRead Notification BY Id"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              getNotificationList();
+                            }, child: Text("Get Notification List"),),
+                          ),
 
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            formdataCapture();
-                          }, child: Text("form Data Capture"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            customEvent();
-                          }, child: Text("customEvent"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            style:
-                            ElevatedButton.styleFrom(
-                              minimumSize: Size.fromHeight(40),);
-                            customEventwithData();
-                          }, child: const Text("customEventwithData"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            appconversionTracking();
-                          }, child: Text("app Conversion Tracking"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            style:
-                            ElevatedButton.styleFrom(
-                              minimumSize: Size.fromHeight(40),);
-                            appconversionTrackingWithData();
-                          }, child: Text("AppConvertionTrackingWithData"),),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(onPressed: () {
-                            style:
-                            ElevatedButton.styleFrom(
-                              minimumSize: Size.fromHeight(40),);
-                           getdeepLinkData();
-                          }, child: Text("GetDeepLinkData"),),
-                        ),
-                      ],
-                    ),
-                  )
-              )
-          )
-      )
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              readnotificationCount();
+                            }, child: const Text("Read Notification Count"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              unReadnotificationCount();
+                            }, child: const Text("Un_Read_Notification_Count"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              deleteNotificationByCampaignid();
+                              setState(() {
+                                controller1.clear();
+                              });
+                            }, child: Text("Delete Notification By CampaignId"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              formdataCapture();
+                            }, child: Text("form Data Capture"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              customEvent();
+                            }, child: Text("customEvent"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              style:
+                              ElevatedButton.styleFrom(
+                                minimumSize: Size.fromHeight(40),);
+                              customEventwithData();
+                            }, child: const Text("customEventwithData"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              appconversionTracking();
+                            }, child: Text("app Conversion Tracking"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              style:
+                              ElevatedButton.styleFrom(
+                                minimumSize: Size.fromHeight(40),);
+                              appconversionTrackingWithData();
+                            }, child: Text("AppConvertionTrackingWithData"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              style:
+                              ElevatedButton.styleFrom(
+                                minimumSize: Size.fromHeight(40),);
+                              getdeepLinkData();
+                            }, child: Text("GetDeepLinkData"),),
+                          ),
+                        ],
+                      ),
+                    )
+                )
+            )
+        )
     );
+  }
+
+
+}
+
+
+class Screen1 extends StatefulWidget {
+  const Screen1({Key? key}) : super(key: key);
+
+  @override
+  State<Screen1> createState() => _Screen1State();
+}
+
+class _Screen1State extends State<Screen1> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.blue,
+      child: Column(
+        children: [
+          Text("Screen1")
+        ],
+      ),
+    );
+  }
+}
+
+class Screen2 extends StatefulWidget {
+  const Screen2({Key? key}) : super(key: key);
+
+  @override
+  State<Screen2> createState() => _Screen2State();
+}
+
+class _Screen2State extends State<Screen2> {
+  @override
+  Widget build(BuildContext context) {
+    return  Container(
+      color: Colors.blue,
+      child: Column(
+        children: [
+          Text("Screen2")
+        ],
+      ),
+    ); ;
   }
 }

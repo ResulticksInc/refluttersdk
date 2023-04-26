@@ -1,3 +1,3 @@
-## 0.0.1
+## 0.0.3
 
 Flutter sdk plugin package made native communication simpler
