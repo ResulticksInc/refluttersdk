@@ -32,10 +32,6 @@
                 <data android:scheme="https" android:host="resu.io" />
                 <data android:scheme="https" />
             </intent-filter>
-
-
-
-
         </activity>
        <service
            android:name=".MessagingService"
