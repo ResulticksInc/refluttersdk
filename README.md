@@ -1,10 +1,6 @@
 # refluttersdk
+Brands use a wide range of offline and online communication touchpoints with multiple identities across them. Resulticks analytics is a value-added service that tracks and reports website and native app traffic and behavior. Integration to Resulticks analytics module enables a broad range of services, such as user journey reporting, augmentation of customer data, and creating or triggering campaigns. The generation of analytic services involves data capture using the software development kit (SDK). It generates the SDK code snippet by Resulticks application and embeds the code snippet onto a destination landing page(s) in a website and mobile app.
 
-A flutter pluplug-in, also called add-on or extension, computer software that adds new functions to a host program without
-altering the host program itself. Widely used in digital audio, video, and Web browsing, plug-ins enable programmers to
-update a host program while keeping the user within the program’s environment.
+Resulticks SDK with Flutter permits integration of push notification services and enables analytics-related data capture with Flutter apps, targeting Android and iOS. The SDK with Flutter works across different cross-platform applications, and using it provides support to the same code on both platforms through API calls specifically identified for iOS or Android.
 
-Plug-ins first gained popularity in the 1990s as software and microprocessors became more powerful. One of the first programs
-to make extensive use of plug-ins was Adobe Photoshop, an image-processing and editing program. Early plug-ins provided enhanced
-functions such as special effects, filters, and other options for manipulating images within Photoshop.gin package which will be
-very useful to communicate with native code from flutter
+The documentation introduces the basics, starting with Resulticks SDK and Flutter
