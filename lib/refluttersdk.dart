@@ -1,7 +1,4 @@
 import 'refluttersdk_platform_interface.dart';
-import 'package:flutter/services.dart';
-import 'package:uni_links/uni_links.dart';
-import 'package:flutter/foundation.dart';
 import 'dart:async';
 
 typedef void NotificationCallback(String data);
@@ -61,50 +58,9 @@ class Refluttersdk {
   void sdkRegisteration(Map userData) {
     RefluttersdkPlatform.instance.sdkRegisteration(userData);
   }
-  bool _initialURILinkHandled = false;
-
-  Uri? _initialURI;
-  Uri? _currentURI;
-  Object? _err;
-  StreamSubscription? _streamSubscription;
-
-  Future<void> _initURIHandler() async {
-    // 1
-    if (!_initialURILinkHandled) {
-      _initialURILinkHandled = true;
-      try {
-        // 3
-        final initialURI = await getInitialUri();
-        // 4
-        if (initialURI != null) {
-          getURLData("URL");
-        }
-      } on PlatformException {
-        // 5
-      } on FormatException catch (err) {
-        // 6
-      }
-    }
-  }
-
-  void _incomingLinkHandler() {
-    if (!kIsWeb) {
-      _streamSubscription = uriLinkStream.listen((Uri? uri) {
-        getURLData("URL");
-      }, onError: (Object err) {});
-    }
-  }
-
-
 
   getURLData(String type) {
     RefluttersdkPlatform.instance.deepLinkData(type);
-  }
-
-  void deepLinkData() {
-    _initURIHandler();
-    _incomingLinkHandler();
-    getURLData("Activity");
   }
 
   void unReadNotification(String campaignId) {
@@ -119,7 +75,6 @@ class Refluttersdk {
   void screentracking(String screenName) {
     RefluttersdkPlatform.instance.screentracking(screenName);
   }
-
 
   listener(NotificationCallback channel){
     RefluttersdkPlatform.instance.listener(channel);

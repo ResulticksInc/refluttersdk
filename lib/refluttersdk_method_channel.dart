@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:refluttersdk/refluttersdk.dart';
 import 'refluttersdk_platform_interface.dart';
+import 'package:uni_links/uni_links.dart';
+import 'dart:async';
+
 
 /// An implementation of [RefluttersdkPlatform] that uses method channels.
 class MethodChannelRefluttersdk extends RefluttersdkPlatform {
@@ -85,8 +88,53 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
     methodChannel.invokeMethod('screenTracking',screenName);
   }
 
+  bool _initialURILinkHandled = false;
+  StreamSubscription? _streamSubscription;
+  var flag = false;
+
+
+  Future<void> _initURIHandler() async {
+    // 1
+    if (!_initialURILinkHandled) {
+      _initialURILinkHandled = true;
+      try {
+        // 3
+        final initialURI = await getInitialUri();
+        // 4
+
+        if (initialURI != null) {
+          flag = true;
+          deepLinkData("URL"); 
+        }else {
+            deepLinkData("Activity"); 
+        }
+      } on PlatformException {
+        // 5
+      } on FormatException catch (err) {
+        // 6
+      }
+    }
+  }
+
+  void _incomingLinkHandler() {
+    if (!kIsWeb) {
+      _streamSubscription = uriLinkStream.listen((Uri? uri) {
+        flag = true;
+        if (uri != null) {
+           deepLinkData("URL");
+        }else {
+           deepLinkData("Activity");
+        }
+      }, onError: (Object err) {
+         deepLinkData("Activity");
+      });
+    }
+  }
+
   @override
   void listener(NotificationCallback channel) {
+    _initURIHandler();
+    _incomingLinkHandler();
     methodChannel
         .setMethodCallHandler((call) => _notificationListener(channel, call));
   }
@@ -121,7 +169,7 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
 
       default:
         {
-          print("Default");
+          print("Mismatch occurred :: Default executed");
         }
         break;
     }
