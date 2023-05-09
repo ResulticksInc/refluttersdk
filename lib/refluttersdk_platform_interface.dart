@@ -27,7 +27,7 @@ abstract class RefluttersdkPlatform extends PlatformInterface {
   locationUpdate(double lat, double lang) {
     throw UnimplementedError('locationUpdate() has not been implemented');
   }
-  void addNewNotification(){
+  void addNewNotification(String notificationTitle, String notificationBody){
     throw UnimplementedError('addNewNotification has not been implemented');
   }
 

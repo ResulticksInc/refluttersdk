@@ -17,8 +17,8 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
     methodChannel.invokeMapMethod('locationUpdate', {'lat': lat, 'lang': lang});
   }
   @override
-  void addNewNotification() {
-    methodChannel.invokeMethod('addNotification');
+  void addNewNotification(String notificationTitle, String notificationBody) {
+    methodChannel.invokeMapMethod('addNotification',{'notificationTitle': notificationTitle, 'notificationBody': notificationBody});
   }
   @override
   void customEvent(String event) {
@@ -137,6 +137,7 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
     _incomingLinkHandler();
     methodChannel
         .setMethodCallHandler((call) => _notificationListener(channel, call));
+
   }
 
   _notificationListener(NotificationCallback callback, MethodCall call) async {
@@ -169,10 +170,12 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
 
       default:
         {
-          print("Mismatch occurred :: Default executed");
+
         }
         break;
     }
   }
+
+
 
 }

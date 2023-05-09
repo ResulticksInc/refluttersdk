@@ -50,9 +50,8 @@ class Refluttersdk {
   void updatePushToken(String token) {
     RefluttersdkPlatform.instance.updatePushToken(token);
   }
-  void addNewNotification() {
-    RefluttersdkPlatform.instance
-        .addNewNotification();
+  void addNewNotification(String notificationTitle, String notificationBody) {
+    RefluttersdkPlatform.instance.addNewNotification(notificationTitle,notificationBody);
   }
 
   void sdkRegisteration(Map userData) {
@@ -79,5 +78,7 @@ class Refluttersdk {
   listener(NotificationCallback channel){
     RefluttersdkPlatform.instance.listener(channel);
   }
+
+
 
 }
