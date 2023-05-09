@@ -1,6 +1,6 @@
 name: refluttersdk
-description: Brands use a wide range of offline and online communication touchpoints with multiple identities across them.
-version: 0.0.8
+description: Brands use a wide range of offline and online communication touch points with multiple identities across them.
+version: 1.0.3
 homepage: https://github.com/ResulticksInc/refluttersdk
 
 environment:
