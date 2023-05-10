@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,7 +11,7 @@ import 'dart:async';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'ReFlutterSDK-Example',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -57,6 +59,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _refluttersdkPlugin = Refluttersdk();
   late FirebaseMessaging messaging;
+  late var screenName;
   var token;
 
   @override
@@ -65,6 +68,9 @@ class _MyHomePageState extends State<MyHomePage> {
     _getFcmToken();
     _refluttersdkPlugin.listener((data) {
       print("Deeplink Data $data");
+      Map<String, dynamic> notificationData = jsonDecode(data);
+      String screenName = notificationData['customParams']['screenName'];
+      print("ScreenName :: $screenName");
     });
   }
 
@@ -74,7 +80,6 @@ class _MyHomePageState extends State<MyHomePage> {
       print('Fcm Token: $value');
       token = value;
     });
-
   }
 
   passLocation() {
@@ -84,8 +89,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   customEvent() {
-    var content = "On Track Event called!!!";
-    _refluttersdkPlugin.customEvent(content);
+    var event = "On Track Event called!!!";
+    _refluttersdkPlugin.customEvent(event);
   }
 
   customEventwithData() {
@@ -141,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _refluttersdkPlugin.updatePushToken(fcmToken);
   }
 
-  ondeviceRegister() {
+  sdkRegisteration() {
 
     Map userData = {
       "userUniqueId":"1111",
@@ -180,6 +185,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+
     return MaterialApp(
         home: Scaffold(
             appBar: AppBar(
@@ -194,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(onPressed: () { //
-                              ondeviceRegister();
+                              sdkRegisteration();
                             }, child: Text("On Device User Register"),),
                           ),
                           SizedBox(
@@ -279,6 +286,42 @@ class _MyHomePageState extends State<MyHomePage> {
                                 minimumSize: Size.fromHeight(40),);
                               appconversionTrackingWithData();
                             }, child: Text("App Conversion Tracking WithData"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              ElevatedButton.styleFrom(
+                                minimumSize: Size.fromHeight(40),);
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                // Call the system service here
+                                _refluttersdkPlugin.screentracking("page1");
+                              });
+                              //_refluttersdkPlugin.screentracking("Page1");
+                            }, child: Text("Page-1"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              ElevatedButton.styleFrom(
+                                minimumSize: Size.fromHeight(40),);
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                // Call the system service here
+                                _refluttersdkPlugin.screentracking("page2");
+                              });
+                              //_refluttersdkPlugin.screentracking("Page2");
+                            }, child: Text("Page-2"),),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(onPressed: () {
+                              ElevatedButton.styleFrom(
+                                minimumSize: Size.fromHeight(40),);
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                // Call the system service here
+                                _refluttersdkPlugin.screentracking("page3");
+                              });
+                              //_refluttersdkPlugin.screentracking("Page3");
+                            }, child: Text("Page-3"),),
                           ),
                         ],
                       ),
