@@ -44,15 +44,15 @@ class Refluttersdk {
     }
 
     void appConversion() {
-      RefluttersdkPlatform.instance.appConversion();
-    }
-
-    void appConversionWithData(Map appConvertionData) {
       if (kIsWeb) {
         ReFlutterWebSDK.webConversationTracking();
       } else {
         RefluttersdkPlatform.instance.appConversion();
       }
+    }
+
+    void appConversionWithData(Map appConvertionData) {
+        RefluttersdkPlatform.instance.appConversionWithData(appConvertionData);
     }
 
     void formDataCapture(Map formData) {
