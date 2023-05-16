@@ -1,6 +1,6 @@
 name: refluttersdk
 description: Brands use a wide range of offline and online communication touch points with multiple identities across them.
-version: 1.0.3
+version: 1.0.8
 homepage: https://github.com/ResulticksInc/refluttersdk
 
 environment:
@@ -9,6 +9,8 @@ environment:
 
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_web_plugins:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
   uni_links: ^0.5.1

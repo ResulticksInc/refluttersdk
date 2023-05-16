@@ -1,3 +1,3 @@
-## 1.0.3
+## 1.0.8
 
 Flutter sdk plugin package made native communication simpler

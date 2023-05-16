@@ -5,7 +5,6 @@ import 'refluttersdk_platform_interface.dart';
 import 'package:uni_links/uni_links.dart';
 import 'dart:async';
 
-
 /// An implementation of [RefluttersdkPlatform] that uses method channels.
 class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   /// The method channel used to interact with the native platform.
@@ -20,14 +19,17 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   void addNewNotification(String notificationTitle, String notificationBody) {
     methodChannel.invokeMapMethod('addNotification',{'notificationTitle': notificationTitle, 'notificationBody': notificationBody});
   }
+
   @override
   void customEvent(String event) {
-    methodChannel.invokeMethod('customEvent',event);
+      methodChannel.invokeMethod('customEvent',event);
   }
+
   @override
   void customEventWithData(Map eventData) {
-    methodChannel.invokeMethod('customEventWithData',eventData);
+      methodChannel.invokeMethod('customEventWithData',eventData);
   }
+
   @override
   void deleteNotificationByCampaignId(String campaignId) {
     methodChannel.invokeMethod('deleteNotificationByCampaignId',campaignId);
@@ -38,7 +40,7 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   }
   @override
   void appConversion() {
-    methodChannel.invokeMethod('appConversion');
+      methodChannel.invokeMethod('appConversion');
   }
   @override
   void appConversionWithData(Map appConvertionData) {
@@ -56,8 +58,11 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   }
   @override
   void sdkRegisteration(Map userData) {
-    methodChannel.invokeMethod('sdkRegisteration',userData);
+
+      methodChannel.invokeMethod('sdkRegisteration',userData);
+
   }
+
   @override
   void deepLinkData(type)  {
     methodChannel.invokeMethod('deepLinkData',type);
@@ -66,6 +71,10 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
   Future<int?> getReadNotificationCount() async {
     final readNotificationCount=await methodChannel.invokeMethod<int>('getReadNotificationCount');
     return readNotificationCount;
+  }
+  @override
+  void userLogout() {
+ //_reFlutterSdkWeb.userLogout();
   }
 
   @override

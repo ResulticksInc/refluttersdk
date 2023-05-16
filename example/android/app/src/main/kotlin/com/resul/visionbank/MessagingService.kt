@@ -20,7 +20,7 @@ class MessagingService : FirebaseMessagingService(){
         var intent: Intent = Intent("com.example.fluttersdkplugin_example/MY_EVENT");
         intent.putExtra("message",remoteMessage.notification?.title);
         sendBroadcast(intent);
-        Log.d("msgTrace", "RemoteMessage!!!!")
+
          if(RefluttersdkPlugin().onReceivedCampaign(remoteMessage,this)){
              return
          }
