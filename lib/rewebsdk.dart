@@ -9,7 +9,7 @@ class ReFlutterWeb {
     html.Element? head = html.document.querySelector('head');
     html.ScriptElement script = html.ScriptElement();
     script.defer = true;
-    script.src = "https://sdk.resu.io/handlers/bb073c1c05894bc3bb5deaf9ef5364e5.sdk";
+    script.src = "https://sdk.rsut.io/handlers/5f7a2e8e1bdb47399d28278a2759394c.sdk";
     script.setAttribute('fcm_service_path', fcmPath.toString());
     head?.append(script);
   }
