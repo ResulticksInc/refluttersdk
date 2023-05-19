@@ -23,8 +23,8 @@ class ReFlutterWeb {
   static void webConversationTracking(){
       print("webConversationTracking not implement");
   }
-  
-  void testMethod() {
-    
+
+  static void userLogout(){
+    print("userLogout not implement");
   }
 }

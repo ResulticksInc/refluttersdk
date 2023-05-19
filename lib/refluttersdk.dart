@@ -72,7 +72,12 @@ class Refluttersdk {
     }
 
     void updatePushToken(String token) {
-      RefluttersdkPlatform.instance.updatePushToken(token);
+      if (kIsWeb) {
+        ReFlutterWebSDK.updatePushToken(token);
+      } else {
+        RefluttersdkPlatform.instance.updatePushToken(token);
+      }
+
     }
     void addNewNotification(String notificationTitle, String notificationBody) {
       RefluttersdkPlatform.instance.addNewNotification(
@@ -114,5 +119,10 @@ class Refluttersdk {
         ReFlutterWebSDK.initWebSDK(fcmPath);
       }
     }
+  void userLogout() {
+    if (kIsWeb) {
+      ReFlutterWebSDK.userLogout();
+    }
+  }
   }
 

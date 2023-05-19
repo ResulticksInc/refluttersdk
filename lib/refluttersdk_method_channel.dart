@@ -72,10 +72,6 @@ class MethodChannelRefluttersdk extends RefluttersdkPlatform {
     final readNotificationCount=await methodChannel.invokeMethod<int>('getReadNotificationCount');
     return readNotificationCount;
   }
-  @override
-  void userLogout() {
- //_reFlutterSdkWeb.userLogout();
-  }
 
   @override
   void unReadNotification(String campaignId) {

@@ -40,5 +40,10 @@ class ReFlutterWebSDK {
         ReFlutterWeb.webConversationTracking();
     }
   }
+  static void userLogout(){
+    if(kIsWeb){
+      ReFlutterWeb.userLogout();
+    }
+  }
   
 }

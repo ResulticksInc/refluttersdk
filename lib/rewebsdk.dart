@@ -12,8 +12,16 @@ class ReFlutterWeb {
     script.src = "https://sdk.rsut.io/handlers/5f7a2e8e1bdb47399d28278a2759394c.sdk";
     script.setAttribute('fcm_service_path', fcmPath.toString());
     head?.append(script);
+    setupCustomEventListener(fcmPath);
   }
-  static void userRegister(Map userData) {
+
+   static void setupCustomEventListener(fcmPath) {
+     html.window.addEventListener("sdk_ready", (event) => {
+       sdk.callMethod('serviceWorkerFilePath',[fcmPath] )
+     });
+   }
+
+   static void userRegister(Map userData) {
       obj['userUniqueId'] = userData['userUniqueId'].toString();
      if (userData['email'] != null ) {
        obj['email'] = userData['email'].toString();
@@ -60,5 +68,9 @@ class ReFlutterWeb {
   static void webConversationTracking(){
       sdk.callMethod('conversionTracking');
   }
+   static void userLogout(){
+     sdk.callMethod('userLogout');
+   }
+
 
 }
