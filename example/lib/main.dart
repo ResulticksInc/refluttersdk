@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:refluttersdk/refluttersdk.dart';
 import 'package:flutter/foundation.dart';
 
@@ -66,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     if(kIsWeb){
-      _refluttersdkPlugin.initWebSDK("./firebase-messaging-sw.js");
+      _refluttersdkPlugin.initWebSDK("./sw.js");
     }
     _getFcmToken();
     _refluttersdkPlugin.listener((data) {
@@ -81,7 +79,10 @@ class _MyHomePageState extends State<MyHomePage> {
     messaging = FirebaseMessaging.instance;
     messaging.getToken().then((value) {
       print('Fcm Token: $value');
-      token = value;
+      setState(() {
+        token = value;
+      });
+
     });
   }
 
@@ -97,11 +98,19 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   customEventwithData() {
-    var eventData = {
-      "name": "payment",
-      "data": {"id": "6744", "price": "477"}
-    };
-    _refluttersdkPlugin.customEventWithData(eventData);
+    if(kIsWeb){
+      //for web
+      var data = { 'eventName': 'Website Open', 'eventData': 'Viewed Groceries', 'pId':123, 	};
+      _refluttersdkPlugin.customEventWithData(data);
+    }else{
+      //for android
+      var eventData = {
+        "name": "payment",
+        "data": {"id": "6744", "price": "477"}
+      };
+      _refluttersdkPlugin.customEventWithData(eventData);
+    }
+
   }
 
   deleteNotificationByCampaignid(campaignId) {
@@ -132,7 +141,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   formdataCapture() {
-
     Map formData = {
       "Name": "vishwa",
       "EmailID": "abc@gmail.com",
@@ -146,32 +154,56 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   updatepushToken(fcmToken) {
-    _refluttersdkPlugin.updatePushToken(fcmToken);
+
+    if(kIsWeb){
+      _refluttersdkPlugin.updatePushToken("webToKen23reejd9.kdik");
+      _refluttersdkPlugin.userLogout();
+    }
+  else{
+      _refluttersdkPlugin.updatePushToken(fcmToken);
+    }
+
   }
 
   sdkRegisteration() {
+    if(kIsWeb){
+      //for web
+      Map userData = {
+        "userUniqueId":"visionuser@email.com",
+        "name": "<name>",
+        "age": "<age>",
+        "email": "<email>",
+        "phone": "<phone>",
+        "gender": "<gender>",
+        "profileUrl": "<profileUrl>",
+        "dateOfBirth": "<dob>",
+      };
+      _refluttersdkPlugin.sdkRegisteration(userData);
+    }
+    else{
+      //for android
+      Map userData = {
+        "userUniqueId":"1111",
+        "name": "kkkkk",
+        "age":"23",
+        "email": "abc@gmail.com",
+        "phone": "12334455",
+        "gender": "Male",
+        "profileUrl":"",
+        "dob":"23/12/2010",
+        "education":"BE",
+        "employed":"true",
+        "married":"false",
+        "deviceToken":token,
+        "storeId":"555"
+      };
+      _refluttersdkPlugin.sdkRegisteration(userData);
+    }
 
-    Map userData = {
-      "userUniqueId":"1111",
-      "name": "kkkkk",
-      "age":"23",
-      "email": "abc@gmail.com",
-      "phone": "12334455",
-      "gender": "Male",
-      "profileUrl":"",
-      "dob":"23/12/2010",
-      "education":"BE",
-      "employed":"true",
-      "married":"false",
-      "deviceToken":token,
-      "storeId":"555"
-    };
-    _refluttersdkPlugin.sdkRegisteration(userData);
   }
 
   readnotificationCount() async {
     var rnCount = await _refluttersdkPlugin.getReadNotificationCount();
-
     if (kDebugMode) {
       print("readNotificationCount::$rnCount");
     }
@@ -197,7 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             body: SingleChildScrollView(
                 child:ConstrainedBox(
-                    constraints: BoxConstraints(),
+                    constraints: const BoxConstraints(),
                     child:Container(
                       child: Column(
                         children: [
@@ -205,37 +237,37 @@ class _MyHomePageState extends State<MyHomePage> {
                             width: double.infinity,
                             child: ElevatedButton(onPressed: () { //
                               sdkRegisteration();
-                            }, child: Text("On Device User Register"),),
+                            }, child: const Text("On Device User Register"),),
                           ),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(onPressed: () {
                               updatepushToken(token);
-                            }, child: Text("update Push Token"),),
+                            }, child: const Text("update Push Token"),),
                           ),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(onPressed: () {
                               passLocation();
-                            }, child: Text("Update Location"),),
+                            }, child: const Text("Update Location"),),
                           ),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(onPressed: () {
                               readnotification("w39|G|qqD|iF|DEA5Q|430404|Bulk|20230418060124");
-                            }, child: Text("Read Notification By Id"),),
+                            }, child: const Text("Read Notification By Id"),),
                           ),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(onPressed: () {
                               unreadNotification("w39|G|qqD|iF|DEA5Q|430404|Bulk|20230418060124");
-                            }, child: Text("UnRead Notification BY Id"),),
+                            }, child: const Text("UnRead Notification BY Id"),),
                           ),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(onPressed: () {
                               getNotificationList();
-                            }, child: Text("Get Notification List"),),
+                            }, child: const Text("Get Notification List"),),
                           ),
 
                           SizedBox(
@@ -254,25 +286,25 @@ class _MyHomePageState extends State<MyHomePage> {
                             width: double.infinity,
                             child: ElevatedButton(onPressed: () {
                               deleteNotificationByCampaignid("w39|G|qqD|iF|DEA5Q|430404|Bulk|20230418060124");
-                            }, child: Text("Delete Notification By CampaignId"),),
+                            }, child: const Text("Delete Notification By CampaignId"),),
                           ),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(onPressed: () {
                               formdataCapture();
-                            }, child: Text("form Data Capture"),),
+                            }, child: const Text("form Data Capture"),),
                           ),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(onPressed: () {
                               customEvent();
-                            }, child: Text("customEvent"),),
+                            }, child: const Text("customEvent"),),
                           ),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(onPressed: () {
                               ElevatedButton.styleFrom(
-                                minimumSize: Size.fromHeight(40),);
+                                minimumSize: const Size.fromHeight(40),);
                               customEventwithData();
                             }, child: const Text("customEventwithData"),),
                           ),
@@ -280,7 +312,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             width: double.infinity,
                             child: ElevatedButton(onPressed: () {
                               appconversionTracking();
-                            }, child: Text("app Conversion Tracking"),),
+                            }, child: const Text("app Conversion Tracking"),),
                           ),
                           SizedBox(
                             width: double.infinity,
@@ -288,7 +320,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ElevatedButton.styleFrom(
                                 minimumSize: Size.fromHeight(40),);
                               appconversionTrackingWithData();
-                            }, child: Text("App Conversion Tracking WithData"),),
+                            }, child: const Text("App Conversion Tracking WithData"),),
                           ),
                           SizedBox(
                             width: double.infinity,
@@ -296,35 +328,30 @@ class _MyHomePageState extends State<MyHomePage> {
                               ElevatedButton.styleFrom(
                                 minimumSize: Size.fromHeight(40),);
                               WidgetsBinding.instance.addPostFrameCallback((_) {
-                                // Call the system service here
                                 _refluttersdkPlugin.screentracking("page1");
                               });
-                              //_refluttersdkPlugin.screentracking("Page1");
-                            }, child: Text("Page-1"),),
+                            }, child: const Text("Page-1"),),
                           ),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(onPressed: () {
                               ElevatedButton.styleFrom(
-                                minimumSize: Size.fromHeight(40),);
+                                minimumSize: const Size.fromHeight(40),);
                               WidgetsBinding.instance.addPostFrameCallback((_) {
-                                // Call the system service here
                                 _refluttersdkPlugin.screentracking("page2");
                               });
-                              //_refluttersdkPlugin.screentracking("Page2");
-                            }, child: Text("Page-2"),),
+                            }, child: const Text("Page-2"),),
                           ),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(onPressed: () {
                               ElevatedButton.styleFrom(
-                                minimumSize: Size.fromHeight(40),);
+                                minimumSize: const Size.fromHeight(40),);
                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                 // Call the system service here
                                 _refluttersdkPlugin.screentracking("page3");
                               });
-                              //_refluttersdkPlugin.screentracking("Page3");
-                            }, child: Text("Page-3"),),
+                            }, child: const Text("Page-3"),),
                           ),
                         ],
                       ),
