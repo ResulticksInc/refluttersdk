@@ -1,14 +1,16 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart' if (dart.library.io) 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart' if (dart.library.io) 'package:firebase_core/firebase_core.dart';
 import 'package:refluttersdk/refluttersdk.dart';
 import 'package:flutter/foundation.dart';
 
 
 void main() async {
-   WidgetsFlutterBinding.ensureInitialized();
-   await Firebase.initializeApp();
+  if (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS) {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+  }
   runApp(const MyApp());
 }
 
@@ -55,8 +57,8 @@ class MyHomePage extends StatefulWidget {
 }
 final _refluttersdkPlugin = Refluttersdk();
 class _MyHomePageState extends State<MyHomePage> {
-
-  late FirebaseMessaging messaging;
+  //
+  // late FirebaseMessaging messaging;
   late var screenName;
   var token;
 
@@ -65,8 +67,10 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     if(kIsWeb){
       _refluttersdkPlugin.initWebSDK("./sw.js");
+    }  if (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS){
+      _getFcmToken();
     }
-    _getFcmToken();
+
     _refluttersdkPlugin.listener((data) {
       print("Deeplink Data :: $data");
       Map<String, dynamic> notificationData = jsonDecode(data);
@@ -76,14 +80,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _getFcmToken() async {
-    messaging = FirebaseMessaging.instance;
-    messaging.getToken().then((value) {
-      print('Fcm Token: $value');
-      setState(() {
-        token = value;
+       FirebaseMessaging messaging = FirebaseMessaging.instance;
+      messaging.getToken().then((value) {
+        print('Fcm Token: $value');
+        setState(() {
+          token = value;
+        });
       });
-
-    });
   }
 
   passLocation() {
@@ -100,10 +103,10 @@ class _MyHomePageState extends State<MyHomePage> {
   customEventwithData() {
     if(kIsWeb){
       //for web
-      var data = { 'eventName': 'Website Open', 'eventData': 'Viewed Groceries', 'pId':123, 	};
+      var data = { 'eventName': 'Website Opened', 'eventData': 'Viewed Groceries', 'pId':123, 	};
       _refluttersdkPlugin.customEventWithData(data);
     }else{
-      //for android
+      //for android & iOS
       var eventData = {
         "name": "payment",
         "data": {"id": "6744", "price": "477"}
@@ -154,15 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   updatepushToken(fcmToken) {
-
-    if(kIsWeb){
-      _refluttersdkPlugin.updatePushToken("webToKen23reejd9.kdik");
-      _refluttersdkPlugin.userLogout();
-    }
-  else{
-      _refluttersdkPlugin.updatePushToken(fcmToken);
-    }
-
+    _refluttersdkPlugin.updatePushToken(fcmToken);
   }
 
   sdkRegisteration() {
@@ -181,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _refluttersdkPlugin.sdkRegisteration(userData);
     }
     else{
-      //for android
+      //for android & iOS
       Map userData = {
         "userUniqueId":"1111",
         "name": "kkkkk",
